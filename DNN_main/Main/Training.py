@@ -5,8 +5,8 @@
 import sys
 import os
 
-repo = os.environ['RECO_REPO']
-sys.path.append(repo + 'neutrinoreconstruction/DeepLearning/TrainingHandler')
+repo= os.environ['NEW_REPO']
+sys.path.append(repo + '/DNN_neutrino_reco/DNN_main/TrainingHandler')
 
 import TrainingHandler as th
 

@@ -35,20 +35,32 @@ class GridEvaluation():
 
         print(">>> Loading datasets ... ")
 
-        pd_val_frames = []
-        for val_sample in self.config.get('input', 'data-val').split(','):
-            pd_val_frames.append(pd.read_hdf(val_sample))
-        self.pd_valid = pd.concat(pd_val_frames)
-        self.data_valid = self.pd_valid[training_variables].values
-        self.truth_valid = self.pd_valid[discriminating_variable].values
+        self.pd_names = []
+        self.pd_eval = {}
+        self.data_eval = {}
+        self.truth_eval = {}
+        counter = 0
 
-        self.pd_data_long = pd.read_hdf(self.config.get('evaluation','long-data'))
-        self.pd_data_trans = pd.read_hdf(self.config.get('evaluation','trans-data'))
-        self.data_long = self.pd_data_long[training_variables].values
-        self.data_trans = self.pd_data_trans[training_variables].values
-        self.truth_long = self.pd_data_long['truth_cos_theta'].values
-        self.truth_trans = self.pd_data_trans['truth_cos_theta'].values
-        self.truth_unpol = self.pd_valid['truth_cos_theta'].values
+        for eval_samples in self.config.get('evaluation', 'data-eval').split(':'):
+            pd_eval_frames = []
+            for eval_sample in eval_samples.split(','):
+                pd_eval_frames.append(pd.read_hdf(eval_sample))
+            pd_eval = pd.concat(pd_eval_frames)
+            if len(pd_eval_frames) > 1:
+                if (counter == 0):
+                    sample_name = 'merged.calibrated.h5'
+                else:
+                    sample_name = 'merged'+str(counter)+'.calibrated.h5'
+                counter = counter + 1
+            if len(pd_eval_frames) == 1:
+                sample_orig = eval_samples.split('/')[-1]
+                base_name = sample_orig.split('.')
+                base_name.insert(1,'calibrated')
+                sample_name = '.'.join(base_name)
+            self.pd_names.append(sample_name)
+            self.pd_eval[sample_name] = pd_eval
+            self.data_eval[sample_name] = pd_eval[training_variables].values
+            self.truth_eval[sample_name] = pd_eval[discriminating_variable].values
 
         if self.config.get('evaluation','type')=='binary': 
             self.fig_roc = plt.figure(1)
@@ -67,9 +79,10 @@ class GridEvaluation():
             plt.title('ROC curves')
             self.fig_roc.savefig(self.config.get('evaluation', 'output') + '/roc_curves.pdf')
 
-        self.pd_data_long.to_hdf(self.config.get('evaluation', 'output')+'/calibrated_long.h5', 'calibrated_long', mode='w', table=True)
-        self.pd_data_trans.to_hdf(self.config.get('evaluation', 'output')+'/calibrated_trans.h5', 'calibrated_trans', mode='w', table=True)              
-        self.pd_valid.to_hdf(self.config.get('evaluation', 'output')+'/calibrated_valid.h5', 'calibrated_valid', mode='w', table=True)
+        for sample in self.pd_names:
+            output_file = self.config.get('evaluation', 'output')+'/'+sample
+            print(">>> Writing output "+output_file+" ...")
+            self.pd_eval[sample].to_hdf(output_file, 'evaluated_data', mode='w', table=True)
 
     #########################################################################
 
@@ -95,9 +108,10 @@ class GridEvaluation():
             if len(models) > 1 and self.config.get('evaluation', 'type') == 'binary':
                 warnings.warn('Only '+models[-1]+' score will be rounded')
             for model_ep in models:
-                self.evaluate( model_dir, model_ep)
+                for sample in self.pd_names:
+                    self.evaluate( model_dir, model_ep, sample)
     
-    def evaluate(self, model_dir, model_ep):
+    def evaluate(self, model_dir, model_ep, sample):
         path = self.trained_models + '/' + model_dir
         
         model_name = path + '/' + model_ep
@@ -105,42 +119,38 @@ class GridEvaluation():
 
         scaler_name = path + '/scaler.pkl'
         scaler = joblib.load(scaler_name)
-        data_scaled_long = scaler.transform(self.data_long)
-        data_scaled_trans = scaler.transform(self.data_trans)
-        data_scaled_valid = scaler.transform(self.data_valid)
 
-        pred_long = model.predict(data_scaled_long)
-        pred_trans = model.predict(data_scaled_trans)
-        pred_valid = model.predict(data_scaled_valid)
+        data_scaled = scaler.transform(self.data_eval[sample])
+
+        pred = model.predict(data_scaled)
+
+        label_sc_name = path + '/label_scaler.pkl'
+        if os.path.exists(label_sc_name):
+            label_scaler = joblib.load(label_sc_name)
+            pred = label_scaler.inverse_transform(pred)
 
         if int(self.config.get('output','save-steps'))==1:
             epoch = model_ep[19:]
-            print(">>> Evaluating model " + model_dir + " (epoch " + epoch + ") ... ")
-            self.pd_data_long[model_dir+'_e'+epoch] = pred_long
-            self.pd_data_trans[model_dir+'_e'+epoch] = pred_trans
-            self.pd_valid[model_dir+'_e'+epoch] = pred_valid
+            print(">>> Evaluating model " + model_dir + " (epoch " + epoch + ") on sample " + sample.split('.')[0] + " ... ")
+            self.pd_eval[sample][model_dir+'_e'+epoch] = pred
             model_label = model_dir + '_e' + epoch
         else: 
-            print(">>> Evaluating model " + model_dir + " ... ")
-            self.pd_data_long[model_dir+'_pred'] = pred_long
-            self.pd_data_trans[model_dir+'_pred'] = pred_trans
-            self.pd_valid[model_dir+'_pred'] = pred_valid
+            print(">>> Evaluating model " + model_dir + " on sample " + sample.split('.')[0] + " ... ")
+            self.pd_eval[sample][model_dir+'_pred'] = pred
             model_label = model_dir
 
         if self.config.get('evaluation', 'type') == 'binary':
             plt.figure(1)
-            auc = roc_auc_score(self.truth_valid, pred_valid)
+            auc = roc_auc_score(self.truth_eval[sample], pred)
             print(">>> AUC: ",auc)
-            fp , tp, th = roc_curve(self.truth_valid, pred_valid)
+            fp , tp, th = roc_curve(self.truth_eval[sample], pred)
             thr = ot.optimizeThr(fp,tp,th)
             plt.plot(fp, tp, label=model_label)
 
-            self.pd_data_long[model_dir+'_rounded_score'] = self.roundScore(pred_long, thr)
-            self.pd_data_trans[model_dir+'_rounded_score'] = self.roundScore(pred_trans, thr)
-            selection_valid = self.roundScore(pred_valid, thr)
-            self.pd_valid[model_dir+'_rounded_score'] = selection_valid
+            selection = self.roundScore(pred, thr)
+            self.pd_eval[sample][model_dir+'_rounded_score'] = selection
 
-            nall = selection_valid.shape[0]
+            nall = selection.shape[0]
             comparison = np.ones((nall,1), dtype=bool)
-            np.equal(np.expand_dims(self.truth_valid, 1),selection_valid,comparison)
+            np.equal(np.expand_dims(self.truth_eval, 1),selection,comparison)
             print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))

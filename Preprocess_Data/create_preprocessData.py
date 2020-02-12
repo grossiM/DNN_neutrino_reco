@@ -74,6 +74,8 @@ data_handler.filter('mu_delta >= 0')#we will remove it in regression sooner or l
 data_handler.appendTwoSolutions('mu')
 data_handler.appendEnergy('mu')
 data_handler.calcCosTheta(['mu_px', 'mu_py', 'mu_pz', 'mu_E', 'v_mu_px', 'v_mu_py', 'v_mu_pz', 'v_mu_E'],'truth')
+data_handler.calcCosTheta(['mu_px', 'mu_py', 'mu_pz', 'mu_E', 'v_mu_px', 'v_mu_py', 'v_mu_sol0', 'v_mu_predict_E0'],'sol0')
+data_handler.calcCosTheta(['mu_px', 'mu_py', 'mu_pz', 'mu_E', 'v_mu_px', 'v_mu_py', 'v_mu_sol1', 'v_mu_predict_E1'],'sol1')
 data_handler.appendMass(variables_sol0, 'event0')
 data_handler.appendMass(variables_sol1,'event1')
 

@@ -1,7 +1,7 @@
 import sys
 import os
 import configparser
-
+import numpy as np
 import pandas as pd 
 
 from shutil import copyfile
@@ -19,6 +19,7 @@ import Configurables
 from plotting_func import plot_history
 import Model
 #import new_model
+np.set_printoptions(threshold=sys.maxsize)
 
 class TrainingHandler():
 
@@ -97,10 +98,10 @@ class TrainingHandler():
         #scaler implementation
         scaler = StandardScaler()
         scaler.fit(self.data_train)
-    
+
         self.data_train_scaled = scaler.transform(self.data_train)
         self.data_val_scaled = scaler.transform(self.data_val)
-    
+
         joblib.dump(scaler, self.properties['output-folder']+ "/scaler.pkl")
 
         model = Model.build(self.properties)

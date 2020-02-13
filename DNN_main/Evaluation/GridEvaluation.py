@@ -16,7 +16,7 @@ from sklearn.metrics import roc_auc_score, roc_curve
 import matplotlib.pyplot as plt
 
 repo = os.environ['NEW_REPO']
-sys.path.append(repo + 'DNN_neutrino_reco/Utils/DataHandler')
+sys.path.append(repo + '/DNN_neutrino_reco/Utils/DataHandler')
 
 import optimizeThr as ot
 import handler_kinematics as kinematics

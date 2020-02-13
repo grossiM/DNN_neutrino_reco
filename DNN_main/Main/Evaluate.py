@@ -22,6 +22,7 @@ args = parser.parse_args()
 config = configparser.ConfigParser()
 config.optionxform = str
 config.read(args.config)
+print(config.get('output','output-folder'))
 folder_name = config.get('evaluation','output')
 if os.path.exists(folder_name):
     raise ValueError('Error: folder '+folder_name+' already exists')

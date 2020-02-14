@@ -74,17 +74,17 @@ except NameError:
 to_rm = config.get('selection','discard').split(',')
 print('selection to remove : ' )
 ###
-# for r in range(len(to_rm)):
-#     print(to_rm[r])
-#     bad_mod = fnmatch.filter(hdf_long.columns, '*'+to_rm[r]+'*')
+for r in range(len(to_rm)):
+    print(to_rm[r])
+    bad_mod = fnmatch.filter(hdf_long.columns, '*'+to_rm[r]+'*')
 
-#     hdf_long = hdf_long.drop(bad_mod,axis=1)
-#     hdf_trans.drop(bad_mod,axis=1)
-#     hdf_unpol.drop(bad_mod,axis=1)
-#     hdf_full_comp.drop(bad_mod,axis=1)
-#     print(bad_mod)
-# ###
-# print(to_rm)
+    hdf_long = hdf_long.drop(bad_mod,axis=1)
+    hdf_trans.drop(bad_mod,axis=1)
+    hdf_unpol.drop(bad_mod,axis=1)
+    hdf_full_comp.drop(bad_mod,axis=1)
+    print(bad_mod)
+###
+print(to_rm)
 
 #plotting
 binning = config.get('plotting', 'binning')

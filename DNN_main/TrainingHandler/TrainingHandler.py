@@ -3,6 +3,7 @@ import os
 import configparser
 import numpy as np
 import pandas as pd 
+import numpy as np
 
 from shutil import copyfile
 
@@ -103,6 +104,13 @@ class TrainingHandler():
         self.data_val_scaled = scaler.transform(self.data_val)
 
         joblib.dump(scaler, self.properties['output-folder']+ "/scaler.pkl")
+
+        if self.properties['scale-label']:
+            label_scaler = StandardScaler()
+            label_scaler.fit(np.expand_dims(self.labels_train,1))
+            self.labels_train = label_scaler.transform(np.expand_dims(self.labels_train,1))
+            self.labels_val = label_scaler.transform(np.expand_dims(self.labels_val,1))
+            joblib.dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
 
         model = Model.build(self.properties)
 

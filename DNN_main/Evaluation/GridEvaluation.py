@@ -152,5 +152,5 @@ class GridEvaluation():
 
             nall = selection.shape[0]
             comparison = np.ones((nall,1), dtype=bool)
-            np.equal(np.expand_dims(self.truth_eval, 1),selection,comparison)
+            np.equal(np.expand_dims(self.truth_eval[sample],1),selection,comparison)
             print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))

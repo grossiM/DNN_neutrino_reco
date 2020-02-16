@@ -65,8 +65,9 @@ to_rm = config.get('selection','discard').split(',')
 
 ###
 for model_to_rm in to_rm:
-    bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
-
+    bad_mod = fnmatch.filter(hdf_long.columns, '*'+ model_to_rm +'*')
+    print('bad_mod')
+    print(bad_mod)
     hdf_long = hdf_long.drop(bad_mod,axis=1)
     hdf_trans.drop(bad_mod,axis=1)
     hdf_unpol.drop(bad_mod,axis=1)
@@ -201,28 +202,28 @@ print('plotting executed')
 #######longitudinal
 fig_long = plt.figure(1)
 plt.title('Longitudinal ')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco cos'+r'$\theta$')
 
 # #########transverse
 fig_trans = plt.figure(2)
 plt.title('Transverse')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco cos'+r'$\theta$')
 
 # #######unpolarized
 fig_unpol = plt.figure(3)
 plt.title('Unpolarized')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco cos'+r'$\theta$')
 
 # ######full computation
 fig_full = plt.figure(4)
 plt.title('Full computation')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco cos'+r'$\theta$')
 
@@ -237,28 +238,28 @@ print('figures saved into '+where_save)
 #######longitudinal
 fig_Dlong = plt.figure(5)
 plt.title('Longitudinal ')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco - truth cos'+r'$\theta$')
 
 # #########transverse
 fig_Dtrans = plt.figure(6)
 plt.title('Transverse')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco - truth cos'+r'$\theta$')
 
 # #######unpolarized
 fig_Dunpol = plt.figure(7)
 plt.title('Unpolarized')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco - truth cos'+r'$\theta$')
 
 # ######full computation
 fig_Dfull = plt.figure(8)
 plt.title('Full computation')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco - truth cos'+r'$\theta$')
 

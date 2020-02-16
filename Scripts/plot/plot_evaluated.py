@@ -31,7 +31,7 @@ config.read(args.config)
 where_save =  config.get('output','output-folder')
 
 if os.path.exists(where_save+'/theta_full.pdf') or \
-   os.path.exists(where_save+'/theta_full.pdf') or \
+   os.path.exists(where_save+'/theta_unpol.pdf') or \
    os.path.exists(where_save+'/theta_trans.pdf') or \
    os.path.exists(where_save+'/theta_long.pdf'):
     raise ValueError('plots in the '+where_save+'would be overwritten, exiting')
@@ -65,8 +65,9 @@ to_rm = config.get('selection','discard').split(',')
 
 ###
 for model_to_rm in to_rm:
-    bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
-
+    bad_mod = fnmatch.filter(hdf_long.columns, '*'+ model_to_rm + '*')
+    print('bad_mod')
+    print(bad_mod)
     hdf_long = hdf_long.drop(bad_mod,axis=1)
     hdf_trans.drop(bad_mod,axis=1)
     hdf_unpol.drop(bad_mod,axis=1)
@@ -84,6 +85,8 @@ good = []
 for wildcard in config.get('selection','wildcard').split(','):
     if config.get('selection','type') == 'binary':
         wildcard += '_rounded_score'
+    #elif config.get('selection','type') == 'regression':
+        #wildcard += '_pred'
     good = good + fnmatch.filter(hdf_long.columns,wildcard)
 
 if config.get('selection','type') == 'binary':

@@ -19,6 +19,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 
+repo = os.environ['NEW_REPO']
+sys.path.append(repo + '/DNN_neutrino_reco/DNN_main/Evaluation')
+
 from sklearn.metrics import roc_auc_score, roc_curve
 import optimizeThr as ot
 
@@ -128,6 +131,7 @@ def plot_model(name, avlb_pol, where):
             nall = selection.shape[0]
             comparison = np.ones((nall,), dtype=bool)
             np.equal(hdf_long['v_mu_label'].values,selection,comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
 
         elif pol_type == 'trans':
             
@@ -143,6 +147,7 @@ def plot_model(name, avlb_pol, where):
             nall = selection.shape[0]
             comparison = np.ones((nall,), dtype=bool)
             np.equal(hdf_trans['v_mu_label'].values,selection,comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
 
         elif pol_type == 'unpol':
             
@@ -158,6 +163,7 @@ def plot_model(name, avlb_pol, where):
             nall = selection.shape[0]
             comparison = np.ones((nall,), dtype=bool)
             np.equal(hdf_unpol['v_mu_label'].values,selection,comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
 
         elif pol_type == 'fullcomp':
             
@@ -173,6 +179,7 @@ def plot_model(name, avlb_pol, where):
             nall = selection.shape[0]
             comparison = np.ones((nall,), dtype=bool)
             np.equal(hdf_full_comp['v_mu_label'].values,selection,comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
 
         else:
             print('wrong polarization')

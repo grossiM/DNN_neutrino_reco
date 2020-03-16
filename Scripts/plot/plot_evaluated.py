@@ -35,7 +35,7 @@ if os.path.exists(where_save+'/theta_full.pdf') or \
    os.path.exists(where_save+'/theta_unpol.pdf') or \
    os.path.exists(where_save+'/theta_trans.pdf') or \
    os.path.exists(where_save+'/theta_long.pdf'):
-    raise ValueError('plots in the '+where_save+'would be overwritten, exiting')
+    raise ValueError('plots in the '+where_save+' would be overwritten, exiting')
 if not os.path.exists(where_save):
     os.system('mkdir ' + where_save)
 
@@ -66,8 +66,8 @@ to_rm = config.get('selection','discard').split(',')
 
 ###
 for model_to_rm in to_rm:
-    bad_mod = fnmatch.filter(hdf_long.columns, '*'+ model_to_rm + '*')
-    print('bad_mod')
+    bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
+    print('discarded branches:')
     print(bad_mod)
     hdf_long = hdf_long.drop(bad_mod,axis=1)
     hdf_trans.drop(bad_mod,axis=1)
@@ -200,30 +200,35 @@ for c in good:
         raise ValueError('Error: wrong evaluation type selected')
 print('plotting executed')
 
+if config.get('selection','type') == 'regression':
+    reco_type = 'regression'
+else :
+    reco_type = 'classification'
+
 plt.figure(1)
 plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
-plt.title('Longitudinal polarization')
+plt.title('Longitudinal polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(2)
 plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
-plt.title('Transverse polarization')
+plt.title('Transverse polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(3)
 plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
-plt.title('Unpolarized OSP')
+plt.title('Unpolarized OSP, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(4)
 plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
-plt.title('Full computation')
+plt.title('Full computation, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))

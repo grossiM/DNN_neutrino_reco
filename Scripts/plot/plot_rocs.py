@@ -13,6 +13,7 @@ import sys
 import configparser
 
 import fnmatch
+import re
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -40,7 +41,7 @@ if os.path.exists(where_save+'/roc_full.pdf') or \
    os.path.exists(where_save+'/roc_unpol.pdf') or \
    os.path.exists(where_save+'/roc_trans.pdf') or \
    os.path.exists(where_save+'/roc_long.pdf'):
-    raise ValueError('plots in the '+where_save+'would be overwritten, exiting')
+    raise ValueError('plots in the '+where_save+' would be overwritten, exiting')
 if not os.path.exists(where_save):
     os.system('mkdir ' + where_save)
 
@@ -113,9 +114,12 @@ def roundScore(score, thr):
 
 """"""
 
-def plot_model(name, avlb_pol, where):
+def plot_model(name, avlb_pol, figNumber):
 
     for pol_type in avlb_pol:
+
+        pattern = config.get('legend','entry').split(':')
+        entry = re.sub(pattern[0],pattern[1], name.rstrip())
 
         if pol_type == 'long':
 
@@ -125,13 +129,16 @@ def plot_model(name, avlb_pol, where):
             print(">>> AUC: ",auc)
             fp , tp, th = roc_curve(hdf_long['v_mu_label'].values, hdf_long[name].values)
             thr, _, _ = ot.optimizeThr(fp,tp,th)
-            plt.plot(fp, tp, label=name.split('_')[0])
+            plt.plot(fp, tp, label=entry)
 
             selection = roundScore(hdf_long[name].values, thr)
             nall = selection.shape[0]
             comparison = np.ones((nall,), dtype=bool)
             np.equal(hdf_long['v_mu_label'].values,selection,comparison)
             print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
+
+            plt.figure(figNumber)
+            plt.plot(fp, tp, label='Long.')
 
         elif pol_type == 'trans':
             
@@ -141,13 +148,16 @@ def plot_model(name, avlb_pol, where):
             print(">>> AUC: ",auc)
             fp , tp, th = roc_curve(hdf_trans['v_mu_label'].values, hdf_trans[name].values)
             thr, _, _ = ot.optimizeThr(fp,tp,th)
-            plt.plot(fp, tp, label=name.split('_')[0])
+            plt.plot(fp, tp, label=entry)
 
             selection = roundScore(hdf_trans[name].values, thr)
             nall = selection.shape[0]
             comparison = np.ones((nall,), dtype=bool)
             np.equal(hdf_trans['v_mu_label'].values,selection,comparison)
             print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
+
+            plt.figure(figNumber)
+            plt.plot(fp, tp, label='Trans.')
 
         elif pol_type == 'unpol':
             
@@ -157,13 +167,16 @@ def plot_model(name, avlb_pol, where):
             print(">>> AUC: ",auc)
             fp , tp, th = roc_curve(hdf_unpol['v_mu_label'].values, hdf_unpol[name].values)
             thr, _, _ = ot.optimizeThr(fp,tp,th)
-            plt.plot(fp, tp, label=name.split('_')[0])
+            plt.plot(fp, tp, label=entry)
 
             selection = roundScore(hdf_unpol[name].values, thr)
             nall = selection.shape[0]
             comparison = np.ones((nall,), dtype=bool)
             np.equal(hdf_unpol['v_mu_label'].values,selection,comparison)
             print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
+
+            plt.figure(figNumber)
+            plt.plot(fp, tp, label='Un. OSP')
 
         elif pol_type == 'fullcomp':
             
@@ -173,13 +186,16 @@ def plot_model(name, avlb_pol, where):
             print(">>> AUC: ",auc)
             fp , tp, th = roc_curve(hdf_full_comp['v_mu_label'].values, hdf_full_comp[name].values)
             thr, _, _ = ot.optimizeThr(fp,tp,th)
-            plt.plot(fp, tp, label=name.split('_')[0])
+            plt.plot(fp, tp, label=entry)
 
             selection = roundScore(hdf_full_comp[name].values, thr)
             nall = selection.shape[0]
             comparison = np.ones((nall,), dtype=bool)
             np.equal(hdf_full_comp['v_mu_label'].values,selection,comparison)
             print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
+
+            plt.figure(figNumber)
+            plt.plot(fp, tp, label='Full comp.')
 
         else:
             print('wrong polarization')
@@ -190,11 +206,21 @@ def plot_model(name, avlb_pol, where):
 #############looping through selected model
 print('looping through selected models:')
 
-for c in good:
+for figNumber, c in enumerate(good):
     #here implement check if binary or regression! o sopra
     print('\n\n\n\n')
     print('>>> Model '+c+':')
-    plot_model(c,pol_list,where_save)
+
+    plot_model(c,pol_list,figNumber+5)
+    fig_model = plt.figure(figNumber+5)
+    pattern = config.get('plotting','model-title').split(':')
+    title = re.sub(pattern[0],pattern[1], c.rstrip())
+    plt.title(title)
+    plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
+    plt.xlabel('fakes')
+    plt.ylabel('efficiency')
+    fig_model.savefig(where_save+'/roc_'+c+'.pdf')
+
 print('\n\n\n\n')
 print('plotting executed')
 
@@ -202,28 +228,28 @@ print('plotting executed')
 #######longitudinal
 fig_long = plt.figure(1)
 plt.title('Longitudinal polarization - ROC curves')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
 plt.xlabel('fakes')
 plt.ylabel('efficiency')
 
 # #########transverse
 fig_trans = plt.figure(2)
 plt.title('Transverse polarization - ROC curves')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
 plt.xlabel('fakes')
 plt.ylabel('efficiency')
 
 # #######unpolarized
 fig_unpol = plt.figure(3)
 plt.title('Unpolarized OSP - ROC curves')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
 plt.xlabel('fakes')
 plt.ylabel('efficiency')
 
 # ######full computation
 fig_full = plt.figure(4)
 plt.title('Full computation - ROC curves')
-plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
 plt.xlabel('fakes')
 plt.ylabel('efficiency')
 

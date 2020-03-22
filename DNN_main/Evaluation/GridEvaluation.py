@@ -82,7 +82,8 @@ class GridEvaluation():
         for sample in self.pd_names:
             output_file = self.config.get('evaluation', 'output')+'/'+sample
             print(">>> Writing output "+output_file+" ...")
-            self.pd_eval[sample].to_hdf(output_file, 'evaluated_data', mode='w', table=True)
+            #self.pd_eval[sample].to_hdf(output_file, 'evaluated_data', mode='w', table=True)
+            self.pd_eval[sample].to_hdf(output_file, 'evaluated_data', mode='w', format='table')
 
     #########################################################################
 

@@ -105,6 +105,7 @@ def plot_scat(name,avlb_pol):
             xl = hdf_long['truth_cos_theta'][0::777].values
             yl = hdf_long[name][0::777].values 
             sc_long = plt.scatter(xl,yl,label=name.split('_')[0])
+            plt.plot(xl,xl,c='black')
 
         elif pol_type == 'trans':
             plt.figure(2)
@@ -113,6 +114,7 @@ def plot_scat(name,avlb_pol):
             xt = hdf_trans['truth_cos_theta'][0::777].values
             yt = hdf_trans[name][0::777].values 
             sc_trans = plt.scatter(xt,yt,label=name.split('_')[0])
+            plt.plot(xt,xt,c='black')
 
         elif pol_type == 'unpol':
             plt.figure(3)
@@ -121,6 +123,7 @@ def plot_scat(name,avlb_pol):
             xu = hdf_unpol['truth_cos_theta'][0::777].values
             yu = hdf_unpol[name][0::777].values 
             sc_unpol = plt.scatter(xu,yu,label=name.split('_')[0])
+            plt.plot(xu,xu,c='black')
 
         elif pol_type == 'fullcomp':
             plt.figure(4)
@@ -129,6 +132,7 @@ def plot_scat(name,avlb_pol):
             xf = hdf_full_comp['truth_cos_theta'][0::777].values
             yf = hdf_full_comp[name][0::777].values 
             sc_long = plt.scatter(xf,yf,label=name.split('_')[0])
+            plt.plot(xf,xf,c='black')
 
         else:
             print('wrong polarization')

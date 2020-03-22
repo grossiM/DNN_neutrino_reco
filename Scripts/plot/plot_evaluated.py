@@ -63,10 +63,11 @@ except NameError:
 
 #selection and removal
 to_rm = config.get('selection','discard').split(',')
-
+print(to_rm)
 ###
 for model_to_rm in to_rm:
-    bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
+    #bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
+    bad_mod = fnmatch.filter(hdf_long.columns, '*'+ model_to_rm + '*')
     print('discarded branches:')
     print(bad_mod)
     hdf_long = hdf_long.drop(bad_mod,axis=1)
@@ -206,36 +207,44 @@ else :
     reco_type = 'classification'
 
 plt.figure(1)
-plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+art_l = []
+lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1),ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+art_l.append(lgd_l)
 plt.title('Longitudinal polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(2)
-plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+art_t = []
+lgd_t = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+art_t.append(lgd_t)
 plt.title('Transverse polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(3)
-plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+art_u = []
+lgd_u = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+art_u.append(lgd_u)
 plt.title('Unpolarized OSP, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(4)
-plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+art_f = []
+lgd_f = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+art_f.append(lgd_f)
 plt.title('Full computation, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
 
-fig_long.savefig(where_save + '/theta_long.pdf')
-fig_trans.savefig(where_save + '/theta_trans.pdf')
-fig_unpol.savefig(where_save + '/theta_unpol.pdf')
-fig_full.savefig(where_save + '/theta_full.pdf')
+fig_long.savefig(where_save + '/theta_long.pdf', additional_artists=art_l,bbox_inches="tight")
+fig_trans.savefig(where_save + '/theta_trans.pdf', additional_artists=art_t,bbox_inches="tight")
+fig_unpol.savefig(where_save + '/theta_unpol.pdf', additional_artists=art_u,bbox_inches="tight")
+fig_full.savefig(where_save + '/theta_full.pdf', additional_artists=art_f,bbox_inches="tight")
 
 print('figures saved into '+where_save)

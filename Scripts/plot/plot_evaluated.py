@@ -142,24 +142,28 @@ def plot_reg(name,avlb_pol, where):
 
     for pol_type in avlb_pol:
 
+        pattern = config.get('legend','entry').split(':')
+        entry = re.sub(pattern[0],pattern[1], name.rstrip())
+
+
         if pol_type == 'long':
             plt.figure(1)
             plt.legend()
-            h_long = plt.hist(hdf_long[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0], density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long[name].values, np.arange(b1, b2, b3),alpha=0.3, label=entry, density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
             plt.figure(2)
             plt.legend()
-            h_trans = plt.hist(hdf_trans[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0], density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans[name].values, np.arange(b1, b2, b3),alpha=0.3, label=entry, density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'unpol':
             plt.figure(3)
             plt.legend()
-            h_unpol = plt.hist(hdf_unpol[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0], density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol[name].values, np.arange(b1, b2, b3),alpha=0.3, label=entry, density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'fullcomp':
             plt.figure(4)
-            h_full = plt.hist(hdf_full_comp[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0], density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp[name].values, np.arange(b1, b2, b3),alpha=0.3, label=entry, density=True, histtype='step', linewidth=2)
 
         else:
             print('wrong polarization')
@@ -213,7 +217,8 @@ art_l.append(lgd_l)
 plt.title('Longitudinal polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
-plt.ylim((0, 1.2*plt.ylim()[1]))
+#plt.ylim((0, 1.2*plt.ylim()[1]))
+plt.ylim((0, 1.2))
 
 plt.figure(2)
 art_t = []
@@ -222,7 +227,8 @@ art_t.append(lgd_t)
 plt.title('Transverse polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
-plt.ylim((0, 1.2*plt.ylim()[1]))
+plt.ylim((0, 1.2))
+#plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(3)
 art_u = []
@@ -231,7 +237,8 @@ art_u.append(lgd_u)
 plt.title('Unpolarized OSP, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
-plt.ylim((0, 1.2*plt.ylim()[1]))
+#plt.ylim((0, 1.2*plt.ylim()[1]))
+plt.ylim((0, 1.2))
 
 plt.figure(4)
 art_f = []
@@ -240,7 +247,8 @@ art_f.append(lgd_f)
 plt.title('Full computation, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
-plt.ylim((0, 1.2*plt.ylim()[1]))
+#plt.ylim((0, 1.2*plt.ylim()[1]))
+plt.ylim((0, 1.2))
 
 fig_long.savefig(where_save + '/theta_long.pdf', additional_artists=art_l,bbox_inches="tight")
 fig_trans.savefig(where_save + '/theta_trans.pdf', additional_artists=art_t,bbox_inches="tight")

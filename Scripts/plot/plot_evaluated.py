@@ -149,21 +149,21 @@ def plot_reg(name,avlb_pol, where):
         if pol_type == 'long':
             plt.figure(1)
             plt.legend()
-            h_long = plt.hist(hdf_long[name].values, np.arange(b1, b2, b3),alpha=0.3, label=entry, density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long[name].values, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
             plt.figure(2)
             plt.legend()
-            h_trans = plt.hist(hdf_trans[name].values, np.arange(b1, b2, b3),alpha=0.3, label=entry, density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans[name].values, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'unpol':
             plt.figure(3)
             plt.legend()
-            h_unpol = plt.hist(hdf_unpol[name].values, np.arange(b1, b2, b3),alpha=0.3, label=entry, density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol[name].values, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'fullcomp':
             plt.figure(4)
-            h_full = plt.hist(hdf_full_comp[name].values, np.arange(b1, b2, b3),alpha=0.3, label=entry, density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp[name].values, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
 
         else:
             print('wrong polarization')

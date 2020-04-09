@@ -67,7 +67,7 @@ print(to_rm)
 ###
 for model_to_rm in to_rm:
     #bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
-    bad_mod = fnmatch.filter(hdf_long.columns, '*'+ model_to_rm + '*')
+    bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
     print('discarded branches:')
     print(bad_mod)
     hdf_long = hdf_long.drop(bad_mod,axis=1)
@@ -108,7 +108,10 @@ def plot_bin(name, avlb_pol, where, random=False):
         entry = re.sub(pattern[0],pattern[1], name.rstrip())
         if random: entry = 'Random'
 
-        normalize = False
+        if (config.get('plotting', 'normalize') == '1'):
+            normalize = True
+        else:
+            normalize = False
 
         if pol_type == 'long':
             score_l = hdf_long[name]
@@ -153,47 +156,57 @@ def plot_reg(name,avlb_pol, where):
         pattern = config.get('legend','entry').split(':')
         entry = re.sub(pattern[0],pattern[1], name.rstrip())
 
+        if (config.get('plotting', 'normalize') == '1'):
+            normalize = True
+        else:
+            normalize = False
 
         if pol_type == 'long':
             plt.figure(1)
             plt.legend()
-            h_long = plt.hist(hdf_long[name].values, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long[name].values, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
             plt.figure(2)
             plt.legend()
-            h_trans = plt.hist(hdf_trans[name].values, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans[name].values, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'unpol':
             plt.figure(3)
             plt.legend()
-            h_unpol = plt.hist(hdf_unpol[name].values, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol[name].values, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'fullcomp':
             plt.figure(4)
-            h_full = plt.hist(hdf_full_comp[name].values, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp[name].values, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         else:
             print('wrong polarization')
     np.savez(where + '/h_' + name, unpol=h_unpol, trans=h_trans, long=h_long, fulcomp = h_full)
 
 """"""
+
+if (config.get('plotting', 'normalize') == '1'):
+    normalize = True
+else:
+    normalize = False
+
 #here create the figure
 #######LONGITUDINAL
 fig_long = plt.figure(1)
-h_long_true = plt.hist(hdf_long['truth_cos_theta'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=True, linewidth=2, label='truth')
+h_long_true = plt.hist(hdf_long['truth_cos_theta'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
 
 # #########transverse
 fig_trans = plt.figure(2)
-h_trans_true = plt.hist(hdf_trans['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=True, linewidth=2, label='truth')
+h_trans_true = plt.hist(hdf_trans['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
 
 # #######unpolarized
 fig_unpol = plt.figure(3)
-h_unpol_true = plt.hist(hdf_unpol['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=True, linewidth=2, label='truth')
+h_unpol_true = plt.hist(hdf_unpol['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
 
 # ######full computation
 fig_full = plt.figure(4)
-h_fullcomp_true = plt.hist(hdf_full_comp['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=True, linewidth=2, label='truth')
+h_fullcomp_true = plt.hist(hdf_full_comp['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
 
 # ########################   saving all truth things
 np.savez(where_save + '/h_truth',unpol=h_unpol_true, trans=h_trans_true, long=h_long_true, fulcomp = h_fullcomp_true)
@@ -230,7 +243,7 @@ plt.title('Longitudinal polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 #plt.ylim((0, 1.2*plt.ylim()[1]))
-plt.ylim((0, 1.2))
+# plt.ylim((0, 1.2))
 
 plt.figure(2)
 art_t = []
@@ -239,7 +252,7 @@ art_t.append(lgd_t)
 plt.title('Transverse polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
-plt.ylim((0, 1.2))
+# plt.ylim((0, 1.2))
 #plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(3)
@@ -250,7 +263,7 @@ plt.title('Unpolarized OSP, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 #plt.ylim((0, 1.2*plt.ylim()[1]))
-plt.ylim((0, 1.2))
+# plt.ylim((0, 1.2))
 
 plt.figure(4)
 art_f = []
@@ -260,7 +273,7 @@ plt.title('Full computation, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 #plt.ylim((0, 1.2*plt.ylim()[1]))
-plt.ylim((0, 1.2))
+# plt.ylim((0, 1.2))
 
 fig_long.savefig(where_save + '/theta_long.pdf', additional_artists=art_l,bbox_inches="tight")
 fig_trans.savefig(where_save + '/theta_trans.pdf', additional_artists=art_t,bbox_inches="tight")

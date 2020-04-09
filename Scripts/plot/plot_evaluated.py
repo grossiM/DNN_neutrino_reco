@@ -100,39 +100,47 @@ if config.get('selection','type') == 'binary':
     
 
 """"""
-def plot_bin(name, avlb_pol, where):
+def plot_bin(name, avlb_pol, where, random=False):
 
     for pol_type in avlb_pol:
 
         pattern = config.get('legend','entry').split(':')
         entry = re.sub(pattern[0],pattern[1], name.rstrip())
+        if random: entry = 'Random'
+
+        normalize = False
 
         if pol_type == 'long':
             score_l = hdf_long[name]
+            if random: score_l = np.random.randint(0,2,score_l.shape)
             cos_l = [s_l[i, sign] for i, sign in enumerate(score_l)]
             plt.figure(1)
-            h_long = plt.hist(cos_l, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(cos_l, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
             score_t = hdf_trans[name]
+            if random: score_t = np.random.randint(0,2,score_t.shape)
             cos_t = [s_t[i, sign] for i, sign in enumerate(score_t)]
             plt.figure(2)
-            h_trans = plt.hist(cos_t, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(cos_t, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'unpol':
             score_u = hdf_unpol[name]
+            if random: score_u = np.random.randint(0,2,score_u.shape)
             cos_u = [s_u[i, sign] for i, sign in enumerate(score_u)]
             plt.figure(3)
-            h_unpol = plt.hist(cos_u, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(cos_u, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'fullcomp':
             score_f = hdf_full_comp[name]
+            if random: score_f = np.random.randint(0,2,score_f.shape)
             cos_f = [s_f[i, sign] for i, sign in enumerate(score_f)]
             plt.figure(4)
-            h_full = plt.hist(cos_f, np.arange(b1, b2, b3), label=entry, density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(cos_f, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         else:
             print('wrong polarization')
+    if random: name = 'random'
     np.savez(where + '/h_' + name, unpol=h_unpol, trans=h_trans, long=h_long, fulcomp = h_full)
 
 """"""
@@ -193,6 +201,10 @@ np.savez(where_save + '/h_truth',unpol=h_unpol_true, trans=h_trans_true, long=h_
 
 #############looping through selected model
 print('looping through selected models:')
+
+if config.get('plotting','random-choice') == '1':
+    print('random')
+    plot_bin(good[0],pol_list,where_save,True)    
 
 for c in good:
     #here implement check if binary or regression! o sopra

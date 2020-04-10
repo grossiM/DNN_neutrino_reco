@@ -14,6 +14,9 @@ def abcdelta_iteration(l_px, l_py, l_pz, l_e, v_px, v_py, mW=80.385):
     b = mW**2*l_pz + 2*l_pz*lpxvp
     c = mW**4/4 + (lpxvp + mW**2)*lpxvp - l_e**2*met2
     delta = b**2 - 4*a*c
+    if delta < 0:
+        delta = 0
+
     return a, b, c, delta
 
 def abcdelta( pdarray, flavour):
@@ -31,6 +34,7 @@ def abcdelta( pdarray, flavour):
 
 
 def tag_solutions_iteration( a, b, delta, v_pz):
+    
     sol0 = (-b - math.sqrt(delta))/2/a
     sol1 = (-b + math.sqrt(delta))/2/a
 

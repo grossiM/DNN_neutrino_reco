@@ -28,7 +28,6 @@ config = configparser.ConfigParser()
 config.optionxform = str
 config.read(args.config)
 
-ten_milion = True
 
 #this part should be implemented if the for cicle to change the folder name according to all selection list
 where_save =  config.get('output','output-folder')
@@ -68,7 +67,7 @@ to_rm = config.get('selection','discard').split(',')
 print(to_rm)
 ###
 for model_to_rm in to_rm:
-    #bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
+    #bad_mod = fnmatch.filter(hdf_long.columns, '*'+ model_to_rm + '*')
     bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
     print('discarded branches:')
     print(bad_mod)
@@ -157,9 +156,8 @@ def plot_reg(name,avlb_pol, where):
 
         pattern = config.get('legend','entry').split(':')
         entry = re.sub(pattern[0],pattern[1], name.rstrip())
-        if ten_milion:
-            #only in case of no batch size name
-            entry = re.sub('_e100', '', entry)
+        
+        entry = re.sub('_e100', '', entry)
 
         if (config.get('plotting', 'normalize') == '1'):
             normalize = True

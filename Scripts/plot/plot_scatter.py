@@ -205,28 +205,31 @@ print('plotting executed')
 #here create the figure
 #######longitudinal
 fig_long = plt.figure(1)
-plt.title('Longitudinal ')
+#plt.title('Longitudinal ')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco cos'+r'$\theta$')
 
 # #########transverse
 fig_trans = plt.figure(2)
-plt.title('Transverse')
+#plt.title('Transverse')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco cos'+r'$\theta$')
 
 # #######unpolarized
 fig_unpol = plt.figure(3)
-plt.title('Unpolarized')
+#plt.title('Unpolarized')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco cos'+r'$\theta$')
 
 # ######full computation
 fig_full = plt.figure(4)
-plt.title('Full computation')
+art_f = []
+lgd_f = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=2, fancybox=True, fontsize='small')
+art_f.append(lgd_f)
+#plt.title('Full computation')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reco cos'+r'$\theta$')

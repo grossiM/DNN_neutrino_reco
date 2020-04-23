@@ -170,3 +170,19 @@ class DataHandler():
         e = np.sum(self.pdarray[e_variables], 1)
 
         self.pdarray[name+'_mass'] = kinematics.calc_mass(px,py,pz,e)
+
+###################################################################################### new part
+
+    def calcpL(self, variables, name):
+        pL = kinematics.vector_manipulation(self.pdarray, variables)
+        self.pdarray['pL'+name] = pd.Series(pL, index=self.pdarray.index)
+
+
+    def appendSelectionCriteria(self, flavour='mu'):
+        sel1, sel2, sel3, sel4, sel5 = kinematics.tag_selectioncriteria(self.pdarray, flavour)
+        self.pdarray['v_'+flavour+'_sel1'] = pd.Series(sel1, index=self.pdarray.index)
+        self.pdarray['v_'+flavour+'_sel2'] = pd.Series(sel2, index=self.pdarray.index)
+        self.pdarray['v_'+flavour+'_sel3'] = pd.Series(sel3, index=self.pdarray.index)
+        self.pdarray['v_'+flavour+'_sel4'] = pd.Series(sel4, index=self.pdarray.index)
+        self.pdarray['v_'+flavour+'_sel5'] = pd.Series(sel5, index=self.pdarray.index)
+

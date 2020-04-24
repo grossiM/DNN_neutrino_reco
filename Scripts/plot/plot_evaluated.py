@@ -242,11 +242,7 @@ plt.figure(1)
 art_l = []
 lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1),ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_l.append(lgd_l)
-<<<<<<< HEAD
 #plt.title('Longitudinal polarization, '+reco_type)
-=======
-# plt.title('Longitudinal polarization, '+reco_type)
->>>>>>> 19d7aab... Updating NNplot_compare.py, commenting titles in plot_evaluated.py
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 #plt.ylim((0, 1.2*plt.ylim()[1]))
@@ -256,11 +252,7 @@ plt.figure(2)
 art_t = []
 lgd_t = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_t.append(lgd_t)
-<<<<<<< HEAD
 #plt.title('Transverse polarization, '+reco_type)
-=======
-# plt.title('Transverse polarization, '+reco_type)
->>>>>>> 19d7aab... Updating NNplot_compare.py, commenting titles in plot_evaluated.py
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 # plt.ylim((0, 1.2))
@@ -270,11 +262,7 @@ plt.figure(3)
 art_u = []
 lgd_u = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_u.append(lgd_u)
-<<<<<<< HEAD
 #plt.title('Unpolarized OSP, '+reco_type)
-=======
-# plt.title('Unpolarized OSP, '+reco_type)
->>>>>>> 19d7aab... Updating NNplot_compare.py, commenting titles in plot_evaluated.py
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 #plt.ylim((0, 1.2*plt.ylim()[1]))
@@ -284,11 +272,7 @@ plt.figure(4)
 art_f = []
 lgd_f = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_f.append(lgd_f)
-<<<<<<< HEAD
 #plt.title('Full computation, '+reco_type)
-=======
-# plt.title('Full computation, '+reco_type)
->>>>>>> 19d7aab... Updating NNplot_compare.py, commenting titles in plot_evaluated.py
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 #plt.ylim((0, 1.2*plt.ylim()[1]))

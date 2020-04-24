@@ -179,7 +179,7 @@ def tag_selectioncriteria_iteration( a, b, pLplus, pLminus, v_pz, v_mu_sol0, v_m
     else:
         print('sel 3 wrong case')
     ######## sel 4 ###########
-    if((-v_mu_sol0*a/b < 0.5 and -v_mu_sol1*a/b < 0.5) or (-v_mu_sol0*a/b > 0.5 and -v_mu_sol1*a/b > 0.5)):
+    if((-v_mu_sol0*a/b <= 0.5 and -v_mu_sol1*a/b <= 0.5) or (-v_mu_sol0*a/b > 0.5 and -v_mu_sol1*a/b > 0.5)):
         sel4 = random
     elif(-v_mu_sol0*a/b < 0.5 and -v_mu_sol1*a/b > 0.5):
         sel4 = 1

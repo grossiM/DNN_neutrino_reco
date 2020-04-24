@@ -11,7 +11,7 @@
 import os
 import sys
 import configparser
-
+import re
 import fnmatch
 import pandas as pd
 import numpy as np
@@ -97,6 +97,13 @@ if config.get('selection','type') == 'binary':
 """"""
 def plot_scat(name,avlb_pol):
     
+    pattern = config.get('legend','entry').split(':')
+    entry = re.sub(pattern[0],pattern[1], name.rstrip())
+    
+    entry = re.sub('_e100', '', entry)
+
+
+
     for pol_type in avlb_pol:
         if pol_type == 'long':
             plt.figure(1)
@@ -104,7 +111,7 @@ def plot_scat(name,avlb_pol):
     
             xl = hdf_long['truth_cos_theta'][0::777].values
             yl = hdf_long[name][0::777].values 
-            sc_long = plt.scatter(xl,yl,label=name.split('_')[0])
+            plt.scatter(xl,yl,label=entry)
             plt.plot(xl,xl,c='black')
 
         elif pol_type == 'trans':
@@ -113,7 +120,7 @@ def plot_scat(name,avlb_pol):
             
             xt = hdf_trans['truth_cos_theta'][0::777].values
             yt = hdf_trans[name][0::777].values 
-            sc_trans = plt.scatter(xt,yt,label=name.split('_')[0])
+            plt.scatter(xt,yt,label=entry)
             plt.plot(xt,xt,c='black')
 
         elif pol_type == 'unpol':
@@ -122,7 +129,7 @@ def plot_scat(name,avlb_pol):
            
             xu = hdf_unpol['truth_cos_theta'][0::777].values
             yu = hdf_unpol[name][0::777].values 
-            sc_unpol = plt.scatter(xu,yu,label=name.split('_')[0])
+            plt.scatter(xu,yu,label=entry)
             plt.plot(xu,xu,c='black')
 
         elif pol_type == 'fullcomp':
@@ -131,7 +138,7 @@ def plot_scat(name,avlb_pol):
             
             xf = hdf_full_comp['truth_cos_theta'][0::777].values
             yf = hdf_full_comp[name][0::777].values 
-            sc_long = plt.scatter(xf,yf,label=name.split('_')[0])
+            plt.scatter(xf,yf,label=entry)
             plt.plot(xf,xf,c='black')
 
         else:
@@ -141,6 +148,14 @@ def plot_scat(name,avlb_pol):
 
 """"""
 def scatt_diff(name,avlb_pol):
+
+    pattern = config.get('legend','entry').split(':')
+    entry = re.sub(pattern[0],pattern[1], name.rstrip())
+    
+    entry = re.sub('_e100', '', entry)
+
+
+
     for pol_type in avlb_pol:
         if pol_type == 'long':
             
@@ -150,7 +165,7 @@ def scatt_diff(name,avlb_pol):
             xdl = hdf_long['truth_cos_theta'][0::777].values
             ydl = hdf_long[name][0::777].values
             dl = ydl - xdl
-            scd_long = plt.scatter(xdl,dl,label=name.split('_')[0])
+            plt.scatter(xdl,dl,label=entry)
             
         elif pol_type == 'trans':
             
@@ -160,7 +175,7 @@ def scatt_diff(name,avlb_pol):
             xdt = hdf_trans['truth_cos_theta'][0::777].values
             ydt = hdf_trans[name][0::777].values
             dt = ydt - xdt
-            scd_trans = plt.scatter(xdt,dt,label=name.split('_')[0])
+            plt.scatter(xdt,dt,label=entry)
             
             
         elif pol_type == 'unpol':
@@ -171,7 +186,7 @@ def scatt_diff(name,avlb_pol):
             xdu = hdf_unpol['truth_cos_theta'][0::777].values
             ydu = hdf_unpol[name][0::777].values
             du = ydu - xdu
-            scd_unpol = plt.scatter(xdu,du,label=name.split('_')[0])
+            plt.scatter(xdu,du,label=entry)
             
 
         elif pol_type == 'fullcomp':
@@ -182,7 +197,7 @@ def scatt_diff(name,avlb_pol):
             xdf = hdf_full_comp['truth_cos_theta'][0::777].values
             ydf = hdf_full_comp[name][0::777].values
             df = ydf - xdf
-            scd_full = plt.scatter(xdf,df,label=name.split('_')[0])
+            plt.scatter(xdf,df,label=entry)
         
         else:
             print('wrong polarization')
@@ -202,27 +217,29 @@ for c in good:
 print('\n\n\n\n')
 print('plotting executed')
 
-#here create the figure
+######################################here create the figure
 #######longitudinal
 fig_long = plt.figure(1)
 #plt.title('Longitudinal ')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
-plt.ylabel('reco cos'+r'$\theta$')
+plt.ylabel('reconstructed cos'+r'$\theta$')
 
 # #########transverse
 fig_trans = plt.figure(2)
 #plt.title('Transverse')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
-plt.ylabel('reco cos'+r'$\theta$')
+plt.ylabel('reconstructed cos'+r'$\theta$')
 
 # #######unpolarized
 fig_unpol = plt.figure(3)
+art_u = []
+lgd_u = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=2, fancybox=True, fontsize='small')
+art_u.append(lgd_u)
 #plt.title('Unpolarized')
-plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
-plt.ylabel('reco cos'+r'$\theta$')
+plt.ylabel('reconstructed cos'+r'$\theta$')
 
 # ######full computation
 fig_full = plt.figure(4)
@@ -230,14 +247,13 @@ art_f = []
 lgd_f = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=2, fancybox=True, fontsize='small')
 art_f.append(lgd_f)
 #plt.title('Full computation')
-plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
-plt.ylabel('reco cos'+r'$\theta$')
+plt.ylabel('reconstructed cos'+r'$\theta$')
 
 fig_long.savefig(where_save + '/scatter_long.pdf')
 fig_trans.savefig(where_save + '/scatter_trans.pdf')
-fig_unpol.savefig(where_save + '/scatter_unpol.pdf')
-fig_full.savefig(where_save + '/scatter_full.pdf')
+fig_unpol.savefig(where_save + '/scatter_unpol.pdf',additional_artists=art_u,bbox_inches="tight")
+fig_full.savefig(where_save + '/scatter_full.pdf',additional_artists=art_f,bbox_inches="tight")
 
 print('figures saved into '+where_save)
 
@@ -247,28 +263,28 @@ fig_Dlong = plt.figure(5)
 plt.title('Longitudinal ')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
-plt.ylabel('reco - truth cos'+r'$\theta$')
+plt.ylabel('reconstructed - truth cos'+r'$\theta$')
 
 # #########transverse
 fig_Dtrans = plt.figure(6)
 plt.title('Transverse')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
-plt.ylabel('reco - truth cos'+r'$\theta$')
+plt.ylabel('reconstructed - truth cos'+r'$\theta$')
 
 # #######unpolarized
 fig_Dunpol = plt.figure(7)
 plt.title('Unpolarized')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
-plt.ylabel('reco - truth cos'+r'$\theta$')
+plt.ylabel('reconstructed - truth cos'+r'$\theta$')
 
 # ######full computation
 fig_Dfull = plt.figure(8)
 plt.title('Full computation')
 plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
 plt.xlabel('truth cos'+r'$\theta$')
-plt.ylabel('reco - truth cos'+r'$\theta$')
+plt.ylabel('reconstructed - truth cos'+r'$\theta$')
 
 fig_Dlong.savefig(where_save + '/Diffscatter_long.pdf')
 fig_Dtrans.savefig(where_save + '/Diffscatter_trans.pdf')

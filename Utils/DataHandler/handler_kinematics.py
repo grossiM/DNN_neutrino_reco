@@ -157,9 +157,9 @@ def tag_selectioncriteria_iteration( a, b, pLplus, pLminus, v_pz, v_mu_sol0, v_m
     if ((pLplus < 5000 and pLminus < 5000) or (pLplus > 5000 and pLminus > 5000) ):
         sel1 = random
     elif (pLplus < 5000 and pLminus > 5000):
-        sel1 = 1
-    elif (pLplus > 5000 and pLminus < 5000):
         sel1 = 0
+    elif (pLplus > 5000 and pLminus < 5000):
+        sel1 = 1
     else: print(' sel 1 wrong case')
     ######## sel 2 ###########
     if((math.fabs(v_mu_sol0) < 50 and math.fabs(v_mu_sol1) < 50) or (math.fabs(v_mu_sol0) > 50 and math.fabs(v_mu_sol1) > 50)):
@@ -187,8 +187,7 @@ def tag_selectioncriteria_iteration( a, b, pLplus, pLminus, v_pz, v_mu_sol0, v_m
         sel4 = 0
     else:
         print('DD sel 4 wrong case')
-    ######## sel 5 ###########combined to check
-    print('E')
+    ######## sel 5 ###########
     if(math.fabs(v_mu_sol0) < 50 and math.fabs(v_mu_sol1) < 50):
         if((math.fabs(pLplus*a/b) < 25 and math.fabs(pLminus*a/b) < 25) or (math.fabs(pLplus*a/b) > 25 and math.fabs(pLminus*a/b) > 25)):
             sel5 = random
@@ -204,9 +203,9 @@ def tag_selectioncriteria_iteration( a, b, pLplus, pLminus, v_pz, v_mu_sol0, v_m
         else:
             sel5 = 0
     elif(math.fabs(v_mu_sol0) < 50 and math.fabs(v_mu_sol1) > 50):
-        sel5 = 0
-    elif(math.fabs(v_mu_sol0) > 50 and math.fabs(v_mu_sol1) < 50):
         sel5 = 1
+    elif(math.fabs(v_mu_sol0) > 50 and math.fabs(v_mu_sol1) < 50):
+        sel5 = 0
     else:
         print('sel 5b wrong case')
 

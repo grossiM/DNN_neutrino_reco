@@ -86,8 +86,8 @@ b1,b2,b3 = float(bins[0]), float(bins[1]), float(bins[2])
 
 good = []
 for wildcard in config.get('selection','wildcard').split(','):
-    if config.get('selection','type') == 'binary':
-        wildcard += '_rounded_score'
+    if config.get('selection','type') == 'binary': # These two lines need to be commented out
+        wildcard += '_rounded_score'               # to train on autoai output
     #elif config.get('selection','type') == 'regression':
         #wildcard += '_pred'
     good = good + fnmatch.filter(hdf_long.columns,wildcard)

@@ -118,7 +118,7 @@ def vector_manipulation_iterate(lp, vp):
     W = lp + vp
     
     #return vplus.Dot(Wplus)
-    return np.dot(lp, W)
+    return np.dot(vp, W)
 
 
 def vector_manipulation_all(meas):

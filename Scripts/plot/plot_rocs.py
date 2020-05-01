@@ -215,7 +215,7 @@ for figNumber, c in enumerate(good):
     fig_model = plt.figure(figNumber+5)
     pattern = config.get('plotting','model-title').split(':')
     title = re.sub(pattern[0],pattern[1], c.rstrip())
-    plt.title(title)
+    # plt.title(title)
     plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
     plt.xlabel('fakes')
     plt.ylabel('efficiency')
@@ -227,28 +227,28 @@ print('plotting executed')
 #here create the figure
 #######longitudinal
 fig_long = plt.figure(1)
-plt.title('Longitudinal polarization - ROC curves')
+# plt.title('Longitudinal polarization - ROC curves')
 plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
 plt.xlabel('fakes')
 plt.ylabel('efficiency')
 
 # #########transverse
 fig_trans = plt.figure(2)
-plt.title('Transverse polarization - ROC curves')
+# plt.title('Transverse polarization - ROC curves')
 plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
 plt.xlabel('fakes')
 plt.ylabel('efficiency')
 
 # #######unpolarized
 fig_unpol = plt.figure(3)
-plt.title('Unpolarized OSP - ROC curves')
+# plt.title('Unpolarized OSP - ROC curves')
 plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
 plt.xlabel('fakes')
 plt.ylabel('efficiency')
 
 # ######full computation
 fig_full = plt.figure(4)
-plt.title('Full computation - ROC curves')
+# plt.title('Full computation - ROC curves')
 plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
 plt.xlabel('fakes')
 plt.ylabel('efficiency')

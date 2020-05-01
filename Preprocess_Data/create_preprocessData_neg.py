@@ -19,7 +19,7 @@ import tables
 
 repo= os.environ['NEW_REPO']
 sys.path.append(repo + '/DNN_neutrino_reco/Utils/DataHandler')
-import DataHandler
+import DataHandler2
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -68,7 +68,7 @@ variables_sol1.append(['v_mu_px', 'v_mu_py', 'v_mu_sol1', 'v_mu_predict_E1'])
 
 
 
-data_handler = DataHandler.DataHandler(args.input, 'tree', True, columns)
+data_handler = DataHandler2.DataHandler(args.input, 'tree', True, columns)
 
 data_handler.appendQuadEqParams()
 #data_handler.filter('mu_delta >= 0')#

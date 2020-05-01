@@ -49,6 +49,12 @@ hdf_trans = pd.read_hdf(config.get('input','data-trans'))
 hdf_unpol = pd.read_hdf(config.get('input','data-unpol'))
 hdf_full_comp = pd.read_hdf(config.get('input','data-fulcomp'))
 
+if config.get('selection','zero-delta-only') == '1':
+    hdf_long = hdf_long.query("mu_delta==0")
+    hdf_trans = hdf_trans.query("mu_delta==0")
+    hdf_unpol = hdf_unpol.query("mu_delta==0")
+    hdf_full_comp = hdf_full_comp.query("mu_delta==0")
+
 ######
 avlb_data = np.zeros((4, 1), dtype=bool)
 try:
@@ -94,10 +100,24 @@ for wildcard in config.get('selection','wildcard').split(','):
 
 if config.get('selection','type') == 'binary':
 
-    s_l = hdf_long[['sol0_cos_theta','sol1_cos_theta']].values
-    s_t = hdf_trans[['sol0_cos_theta','sol1_cos_theta']].values
-    s_u = hdf_unpol[['sol0_cos_theta','sol1_cos_theta']].values
-    s_f = hdf_full_comp[['sol0_cos_theta','sol1_cos_theta']].values
+    variable0 = config.get('plotting','variable0')
+    variable1 = config.get('plotting','variable1')
+    variable0 = 'var0 = ' + variable0
+    variable1 = 'var1 = ' + variable1
+
+    hdf_long.eval(variable0, inplace=True)
+    hdf_long.eval(variable1, inplace=True)
+    hdf_trans.eval(variable0, inplace=True)
+    hdf_trans.eval(variable1, inplace=True)
+    hdf_unpol.eval(variable0, inplace=True)
+    hdf_unpol.eval(variable1, inplace=True)
+    hdf_full_comp.eval(variable0, inplace=True)
+    hdf_full_comp.eval(variable1, inplace=True)
+
+    s_l = hdf_long[['var0','var1']].values
+    s_t = hdf_trans[['var0','var1']].values
+    s_u = hdf_unpol[['var0','var1']].values
+    s_f = hdf_full_comp[['var0','var1']].values
     
 
 """"""
@@ -197,22 +217,27 @@ else:
 #here create the figure
 #######LONGITUDINAL
 fig_long = plt.figure(1)
-h_long_true = plt.hist(hdf_long['truth_cos_theta'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
+if (config.get('plotting', 'truth') == '1'):
+    h_long_true = plt.hist(hdf_long['truth_cos_theta'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
 
 # #########transverse
 fig_trans = plt.figure(2)
-h_trans_true = plt.hist(hdf_trans['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
+if (config.get('plotting', 'truth') == '1'):
+    h_trans_true = plt.hist(hdf_trans['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
 
 # #######unpolarized
 fig_unpol = plt.figure(3)
-h_unpol_true = plt.hist(hdf_unpol['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
+if (config.get('plotting', 'truth') == '1'):
+    h_unpol_true = plt.hist(hdf_unpol['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
 
 # ######full computation
 fig_full = plt.figure(4)
-h_fullcomp_true = plt.hist(hdf_full_comp['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
+if (config.get('plotting', 'truth') == '1'):
+    h_fullcomp_true = plt.hist(hdf_full_comp['truth_cos_theta'], np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
 
 # ########################   saving all truth things
-np.savez(where_save + '/h_truth',unpol=h_unpol_true, trans=h_trans_true, long=h_long_true, fulcomp = h_fullcomp_true)
+if (config.get('plotting', 'truth') == '1'):
+    np.savez(where_save + '/h_truth',unpol=h_unpol_true, trans=h_trans_true, long=h_long_true, fulcomp = h_fullcomp_true)
 # ####################################
 
 #############looping through selected model

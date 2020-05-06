@@ -105,7 +105,7 @@ class TrainingHandler():
 
         joblib.dump(scaler, self.properties['output-folder']+ "/scaler.pkl")
 
-        if self.properties['scale-label'] ==1:
+        if self.properties['scale-label'] == '1':
             label_scaler = StandardScaler()
             label_scaler.fit(np.expand_dims(self.labels_train,1))
             self.labels_train = label_scaler.transform(np.expand_dims(self.labels_train,1))

@@ -135,29 +135,29 @@ def plot_bin(name, avlb_pol, where, random=False):
             normalize = False
 
         if pol_type == 'long':
-            score_l = hdf_long[name]
-            if random: score_l = np.random.randint(0,2,score_l.shape)
+            if random: score_l = np.random.randint(0,2,[s_l.shape[0],])
+            else: score_l = hdf_long[name]
             cos_l = [s_l[i, sign] for i, sign in enumerate(score_l)]
             plt.figure(1)
             h_long = plt.hist(cos_l, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
-            score_t = hdf_trans[name]
-            if random: score_t = np.random.randint(0,2,score_t.shape)
+            if random: score_t = np.random.randint(0,2,[s_t.shape[0],])
+            else: score_t = hdf_trans[name]
             cos_t = [s_t[i, sign] for i, sign in enumerate(score_t)]
             plt.figure(2)
             h_trans = plt.hist(cos_t, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'unpol':
-            score_u = hdf_unpol[name]
-            if random: score_u = np.random.randint(0,2,score_u.shape)
+            if random: score_u = np.random.randint(0,2,[s_u.shape[0],])
+            else: score_u = hdf_unpol[name]
             cos_u = [s_u[i, sign] for i, sign in enumerate(score_u)]
             plt.figure(3)
             h_unpol = plt.hist(cos_u, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'fullcomp':
-            score_f = hdf_full_comp[name]
-            if random: score_f = np.random.randint(0,2,score_f.shape)
+            if random: score_f = np.random.randint(0,2,[s_f.shape[0],])
+            else: score_f = hdf_full_comp[name]
             cos_f = [s_f[i, sign] for i, sign in enumerate(score_f)]
             plt.figure(4)
             h_full = plt.hist(cos_f, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
@@ -245,7 +245,7 @@ print('looping through selected models:')
 
 if config.get('plotting','random-choice') == '1':
     print('random')
-    plot_bin(good[0],pol_list,where_save,True)    
+    plot_bin('random',pol_list,where_save,True)    
 
 for c in good:
     #here implement check if binary or regression! o sopra

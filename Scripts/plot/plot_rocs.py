@@ -53,6 +53,13 @@ hdf_trans = pd.read_hdf(config.get('input','data-trans'))
 hdf_unpol = pd.read_hdf(config.get('input','data-unpol'))
 hdf_full_comp = pd.read_hdf(config.get('input','data-fulcomp'))
 
+query = config.get('selection','filter')
+if query != '':
+    hdf_long = hdf_long.query(query)
+    hdf_trans = hdf_trans.query(query)
+    hdf_unpol = hdf_unpol.query(query)
+    hdf_full_comp = hdf_full_comp.query(query)
+
 ######
 avlb_data = np.zeros((4, 1), dtype=bool)
 try:
@@ -120,6 +127,7 @@ def plot_model(name, avlb_pol, figNumber):
 
         pattern = config.get('legend','entry').split(':')
         entry = re.sub(pattern[0],pattern[1], name.rstrip())
+        thr = float(config.get('selection','working-point'))
 
         if pol_type == 'long':
 
@@ -128,7 +136,7 @@ def plot_model(name, avlb_pol, figNumber):
             print('>>> Longitudinal polarization')
             print(">>> AUC: ",auc)
             fp , tp, th = roc_curve(hdf_long['v_mu_label'].values, hdf_long[name].values)
-            thr, _, _ = ot.optimizeThr(fp,tp,th)
+            if thr < 0: thr, _, _ = ot.optimizeThr(fp,tp,th)
             plt.plot(fp, tp, label=entry)
 
             selection = roundScore(hdf_long[name].values, thr)
@@ -147,7 +155,7 @@ def plot_model(name, avlb_pol, figNumber):
             print('>>> Transverse polarization')
             print(">>> AUC: ",auc)
             fp , tp, th = roc_curve(hdf_trans['v_mu_label'].values, hdf_trans[name].values)
-            thr, _, _ = ot.optimizeThr(fp,tp,th)
+            if thr < 0: thr, _, _ = ot.optimizeThr(fp,tp,th)
             plt.plot(fp, tp, label=entry)
 
             selection = roundScore(hdf_trans[name].values, thr)
@@ -166,7 +174,7 @@ def plot_model(name, avlb_pol, figNumber):
             print('>>> Unpolarized OSP')
             print(">>> AUC: ",auc)
             fp , tp, th = roc_curve(hdf_unpol['v_mu_label'].values, hdf_unpol[name].values)
-            thr, _, _ = ot.optimizeThr(fp,tp,th)
+            if thr < 0: thr, _, _ = ot.optimizeThr(fp,tp,th)
             plt.plot(fp, tp, label=entry)
 
             selection = roundScore(hdf_unpol[name].values, thr)
@@ -185,7 +193,7 @@ def plot_model(name, avlb_pol, figNumber):
             print('>>> Full computation')
             print(">>> AUC: ",auc)
             fp , tp, th = roc_curve(hdf_full_comp['v_mu_label'].values, hdf_full_comp[name].values)
-            thr, _, _ = ot.optimizeThr(fp,tp,th)
+            if thr < 0: thr, _, _ = ot.optimizeThr(fp,tp,th)
             plt.plot(fp, tp, label=entry)
 
             selection = roundScore(hdf_full_comp[name].values, thr)

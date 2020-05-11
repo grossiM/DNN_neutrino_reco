@@ -51,7 +51,7 @@ def plot_single(hist_0,hist_key,n_sel):
 
 for c in config.get('input','data-list').split(':'):
     
-    hist_file = np.load(c)
+    hist_file = np.load(c,allow_pickle=True)
     sample_orig = c.split('/')[-1]
     selection = sample_orig.split('.')[0].split('_')[-1] 
     n_sel = [int(s) for s in selection if s.isdigit()] 
@@ -67,7 +67,7 @@ plt.figure(1)
 art_l = []
 lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1),ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_l.append(lgd_l)
-plt.xlabel('test')
+plt.xlabel(config.get('legend','x-axes'))
 plt.ylabel('Number of events')
 plt.savefig(where_save + '/test.pdf', additional_artists=art_l,bbox_inches="tight")
 

@@ -80,7 +80,7 @@ for l in hist_list:
 ####in step 1 you plot inserting the list
     if step == 1: 
         value = input("Please enter indices of hist to plot:\n").split(',')
-        for m in value:
+        for index, m in enumerate(value):
                 #implement a better check on the class like: isinstance(b,type(a)) where b is the file[hist] and type(a) is class 'uproot.rootio.TH1F', now we compare a string
                 h1 = a[a.keys()[int(m)]]
 
@@ -102,11 +102,14 @@ for l in hist_list:
                 #counts_, bins_, _ = plt.hist(centroids, bins=len(counts),weights=counts, range=(min(bins), max(bins)))
                 #assert np.allclose(bins_, bins)
                 #assert np.allclose(counts_, counts)
-                entry = 'selection '+ str(n_sel)
+                entry = input("Please enter legend entry for hist "+m+":")
                 
                 plt.figure(1)
                 plt.legend()
-                h1p = plt.hist(centroids, bins=len(counts),weights=counts, range=(min(bins), max(bins)),label=entry, density=False, histtype='step', linewidth=2)
+                if index == 0:
+                    h1p = plt.hist(centroids, bins=len(counts), weights=counts, range=(min(bins), max(bins)), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=False, linewidth=2, label=entry)
+                else:
+                    h1p = plt.hist(centroids, bins=len(counts),weights=counts, range=(min(bins), max(bins)),label=entry, density=False, histtype='step', linewidth=2)
                 if save_npz:
                     np.savez(base_name + '/hNEW_' + title + '_' + new_label, h1p= h1p)
                     print('Saving histo ' + title + '_' +  new_label +  ' '+  'in: ' + base_name)

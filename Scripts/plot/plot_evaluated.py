@@ -137,28 +137,40 @@ def plot_bin(name, avlb_pol, where, random=False):
         if pol_type == 'long':
             if random: score_l = np.random.randint(0,2,[s_l.shape[0],])
             else: score_l = hdf_long[name]
-            cos_l = [s_l[i, sign] for i, sign in enumerate(score_l)]
+            if (config.get('plotting', 'invert') == '1'):
+                cos_l = [s_l[i, int(not bool(sign))] for i, sign in enumerate(score_l)]
+            else:
+                cos_l = [s_l[i, sign] for i, sign in enumerate(score_l)]
             plt.figure(1)
             h_long = plt.hist(cos_l, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
             if random: score_t = np.random.randint(0,2,[s_t.shape[0],])
             else: score_t = hdf_trans[name]
-            cos_t = [s_t[i, sign] for i, sign in enumerate(score_t)]
+            if (config.get('plotting', 'invert') == '1'):
+                cos_t = [s_t[i, int(not bool(sign))] for i, sign in enumerate(score_t)]
+            else:
+                cos_t = [s_t[i, sign] for i, sign in enumerate(score_t)]
             plt.figure(2)
             h_trans = plt.hist(cos_t, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'unpol':
             if random: score_u = np.random.randint(0,2,[s_u.shape[0],])
             else: score_u = hdf_unpol[name]
-            cos_u = [s_u[i, sign] for i, sign in enumerate(score_u)]
+            if (config.get('plotting', 'invert') == '1'):
+                cos_u = [s_u[i, int(not bool(sign))] for i, sign in enumerate(score_u)]
+            else:
+                cos_u = [s_u[i, sign] for i, sign in enumerate(score_u)]
             plt.figure(3)
             h_unpol = plt.hist(cos_u, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'fullcomp':
             if random: score_f = np.random.randint(0,2,[s_f.shape[0],])
             else: score_f = hdf_full_comp[name]
-            cos_f = [s_f[i, sign] for i, sign in enumerate(score_f)]
+            if (config.get('plotting', 'invert') == '1'):
+                cos_f = [s_f[i, int(not bool(sign))] for i, sign in enumerate(score_f)]
+            else:
+                cos_f = [s_f[i, sign] for i, sign in enumerate(score_f)]
             plt.figure(4)
             h_full = plt.hist(cos_f, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 

@@ -186,3 +186,5 @@ class DataHandler():
         self.pdarray['v_'+flavour+'_sel4'] = pd.Series(sel4, index=self.pdarray.index)
         self.pdarray['v_'+flavour+'_sel5'] = pd.Series(sel5, index=self.pdarray.index)
 
+    def getPtvv(self,variables,name='pt_vv'):
+        self.pdarray[name] = self.pdarray[variables[0]]+self.pdarray[variables[1]]

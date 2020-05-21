@@ -188,3 +188,7 @@ class DataHandler():
 
     def getPtvv(self,variables,name='pt_vv'):
         self.pdarray[name] = self.pdarray[variables[0]]+self.pdarray[variables[1]]
+    def getPv_xx(self,variables,name='pv_xx'):
+        self.pdarray[name] = self.pdarray[variables[0]]+self.pdarray[variables[1]]
+    def getPv_yy(self,variables,name='pv_yy'):
+        self.pdarray[name] = self.pdarray[variables[0]]+self.pdarray[variables[1]]

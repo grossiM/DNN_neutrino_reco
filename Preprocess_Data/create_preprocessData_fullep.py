@@ -74,6 +74,8 @@ data_handler.getPtEtaPhi('el')
 data_handler.getPtEtaPhi('v_el')
 # #####sum of both neutrino transverse momenta is measurable
 data_handler.getPtvv(['v_mu_pt','v_el_pt'])
+data_handler.getPv_xx(['v_mu_px','v_el_px'])
+data_handler.getPv_yy(['v_mu_py','v_el_py'])
 
 #dropping branch according to selected channel
 #BE CAREFUL!!! LEPTONIC BRANCHES WILL BE RENAMED TO MIMIC SEMILEPTONIC CHANNEL (THIS PART MUST BE DELETED WHEN STUDING REAL FULL LEPTONIC CASE)

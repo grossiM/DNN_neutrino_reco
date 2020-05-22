@@ -45,14 +45,15 @@ class TrainingHandler():
         pd_train = pd.concat(pd_train_frames)
         pd_val = pd.concat(pd_val_frames)
         training_variables = self.properties['training-variables'].split(',')
+        training_labels = self.properties['training-labels'].split(',')
         self.tot_events = pd_train.values.shape[0]
         self.properties['number-of-events'] = int(self.properties['number-of-events'])
         self.checkEventNumber()
         self.data_train = pd_train[training_variables].values[:self.properties['number-of-events']]
         self.properties['input_dim'] = len(training_variables)
-        self.labels_train = pd_train[self.properties['discriminating-variable']].values[:self.properties['number-of-events']]
+        self.labels_train = pd_train[training_labels].values[:self.properties['number-of-events']]
         self.data_val = pd_val[training_variables].values[:self.properties['number-of-events']]
-        self.labels_val = pd_val[self.properties['discriminating-variable']].values[:self.properties['number-of-events']]
+        self.labels_val = pd_val[training_labels].values[:self.properties['number-of-events']]
         self.myconfig = config_file
 
     def readProperties(self):

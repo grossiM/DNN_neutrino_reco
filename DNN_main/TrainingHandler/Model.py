@@ -13,15 +13,18 @@ def build(properties):
 
     if(properties['model'] == 'custom_model'):
         if not 'hidden-layers' in properties:
-            raise ValueError('Error: Property hidden-layers is required in the section training')
+            raise ValueError('Property hidden-layers is required in the section training')
         if not 'neurons' in properties:
-            raise ValueError('Error: Property neurons is required in the section training')
+            raise ValueError('Property neurons is required in the section training')
         if not 'dropout-rate' in properties:
-            raise ValueError('Error: Property dropout-rate is required in the section training')
+            raise ValueError('Property dropout-rate is required in the section training')
+        if not 'output-dim' in properties:
+            raise ValueError('Property dropout-rate is required in the section training')
         model = Sequential()
 
         properties['hidden-layers'] = int(properties['hidden-layers'])
         properties['neurons'] = int(properties['neurons'])
+        properties['output-dim'] = int(properties['output-dim'])
         properties['dropout-rate'] = float(properties['dropout-rate'])
 
         if properties['hidden-layers'] > 0:
@@ -39,7 +42,7 @@ def build(properties):
                             activation=properties['activation']))
 
         if dropout : model.add(Dropout(properties['dropout-rate']))
-        model.add(Dense(units=1, 
+        model.add(Dense(units=properties['output-dim'], 
                         kernel_initializer=properties['kernel_init'],
                         activation=properties['last_activation']))
         #optimizer could be even customized
@@ -50,6 +53,3 @@ def build(properties):
         yaml_string = model.to_yaml()
         print('yaml_string'+ yaml_string)
         return model
-        #K.clear_session()
-        
-

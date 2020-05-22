@@ -31,7 +31,7 @@ class GridEvaluation():
         
         self.trained_models = self.config.get('output','output-folder')
         training_variables = self.config.get('training', 'training-variables').split(',')
-        discriminating_variable = self.config.get('training', 'discriminating-variable')
+        training_labels = self.config.get('training', 'training-labels').split(',')
 
         print(">>> Loading datasets ... ")
 
@@ -60,7 +60,7 @@ class GridEvaluation():
             self.pd_names.append(sample_name)
             self.pd_eval[sample_name] = pd_eval
             self.data_eval[sample_name] = pd_eval[training_variables].values
-            self.truth_eval[sample_name] = pd_eval[discriminating_variable].values
+            self.truth_eval[sample_name] = pd_eval[training_labels].values
 
         if self.config.get('evaluation','type')=='binary': 
             self.fig_roc = plt.figure(1)
@@ -130,17 +130,25 @@ class GridEvaluation():
             label_scaler = joblib.load(label_sc_name)
             pred = label_scaler.inverse_transform(pred)
 
-        if int(self.config.get('output','save-steps'))==1:
+        if int(self.config.get('output','save-steps'))==1: # check this!
             epoch = model_ep[19:]
             print(">>> Evaluating model " + model_dir + " (epoch " + epoch + ") on sample " + sample.split('.')[0] + " ... ")
-            self.pd_eval[sample][model_dir+'_e'+epoch] = pred
+            if pred.shape[1]==1:
+                self.pd_eval[sample][model_dir+'_e'+epoch] = pred
+            else:
+                for cat in range(pred.shape[1]):
+                    self.pd_eval[sample][model_dir+'_cat'+str(cat)+'_e'+epoch] = pred[:,cat]
             model_label = model_dir + '_e' + epoch
         else: 
             print(">>> Evaluating model " + model_dir + " on sample " + sample.split('.')[0] + " ... ")
-            self.pd_eval[sample][model_dir+'_pred'] = pred
+            if pred.shape[1]==1:
+                self.pd_eval[sample][model_dir+'_pred'] = pred
+            else:
+                for cat in range(pred.shape[1]):
+                    self.pd_eval[sample][model_dir+'_cat'+str(cat)+'_pred'] = pred[:,cat]
             model_label = model_dir
 
-        if self.config.get('evaluation', 'type') == 'binary':
+        if self.config.get('evaluation', 'type') == 'binary' and pred.shape[1]==1:
             plt.figure(1)
             auc = roc_auc_score(self.truth_eval[sample], pred)
             print(">>> AUC: ",auc)

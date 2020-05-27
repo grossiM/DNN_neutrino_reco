@@ -24,7 +24,7 @@ def build(properties):
 
         properties['hidden-layers'] = int(properties['hidden-layers'])
         properties['neurons'] = int(properties['neurons'])
-        properties['output-dim'] = int(properties['output-dim'])
+        #properties['output-dim'] = int(properties['output-dim'])
         properties['dropout-rate'] = float(properties['dropout-rate'])
 
         if properties['hidden-layers'] > 0:

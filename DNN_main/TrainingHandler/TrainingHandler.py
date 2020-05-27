@@ -51,6 +51,7 @@ class TrainingHandler():
         self.checkEventNumber()
         self.data_train = pd_train[training_variables].values[:self.properties['number-of-events']]
         self.properties['input_dim'] = len(training_variables)
+        self.properties['output-dim'] = int(properties['output-dim'])
         self.labels_train = pd_train[training_labels].values[:self.properties['number-of-events']]
         self.data_val = pd_val[training_variables].values[:self.properties['number-of-events']]
         self.labels_val = pd_val[training_labels].values[:self.properties['number-of-events']]
@@ -108,9 +109,15 @@ class TrainingHandler():
 
         if self.properties['scale-label'] == '1':
             label_scaler = StandardScaler()
-            label_scaler.fit(np.expand_dims(self.labels_train,1))
-            self.labels_train = label_scaler.transform(np.expand_dims(self.labels_train,1))
-            self.labels_val = label_scaler.transform(np.expand_dims(self.labels_val,1))
+            if self.properties['output-dim'] == 1:
+                label_scaler.fit(np.expand_dims(self.labels_train,1))
+                self.labels_train = label_scaler.transform(np.expand_dims(self.labels_train,1))
+                self.labels_val = label_scaler.transform(np.expand_dims(self.labels_val,1))
+            else:
+                label_scaler.fit(self.labels_train)
+                self.labels_train = label_scaler.transform(self.labels_train)
+                self.labels_val = label_scaler.transform(self.labels_val)
+                
             joblib.dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
 
         model = Model.build(self.properties)

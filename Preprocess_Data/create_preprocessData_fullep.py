@@ -23,7 +23,8 @@ import DataHandler
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.externals import joblib
+#from sklearn.externals import joblib
+from joblib import dump, load
 
 #this part can be improved avoiding too many line command
 parser = argparse.ArgumentParser()

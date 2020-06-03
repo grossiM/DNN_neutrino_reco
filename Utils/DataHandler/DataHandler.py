@@ -192,3 +192,11 @@ class DataHandler():
         self.pdarray[name] = self.pdarray[variables[0]]+self.pdarray[variables[1]]
     def getPv_yy(self,variables,name='pv_yy'):
         self.pdarray[name] = self.pdarray[variables[0]]+self.pdarray[variables[1]]
+
+    def getMAOS(self, niter):
+        mt2, p1x, p1y, p2x, p2y = kinematics.get_maos(self.pdarray, niter)   
+        self.pdarray['mt2'] = mt2    
+        self.pdarray['p1x'] = p1x    
+        self.pdarray['p1y'] = p1y    
+        self.pdarray['p2x'] = p2x    
+        self.pdarray['p2y'] = p2y

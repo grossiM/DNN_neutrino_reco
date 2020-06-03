@@ -68,7 +68,7 @@ except NameError:
     print('not all polarized calibrated sample provided')
 
 
-#selection and removal
+#################################################################selection and removal
 to_rm = config.get('selection','discard').split(',')
 print(to_rm)
 ###
@@ -83,7 +83,7 @@ for model_to_rm in to_rm:
     hdf_full_comp.drop(bad_mod,axis=1)
 ###
 
-#plotting
+#################################################################plotting
 binning = config.get('plotting', 'binning')
 binning = binning.replace('\\', '')
 bins = binning.split(',')
@@ -260,7 +260,7 @@ if config.get('plotting','random-choice') == '1':
     plot_bin('random',pol_list,where_save,True)    
 
 for c in good:
-    #here implement check if binary or regression! o sopra
+    #here implement check if binary or regression!
     print(c)
     if config.get('selection','type') == 'binary':
         plot_bin(c,pol_list,where_save)
@@ -272,7 +272,7 @@ print('plotting executed')
 
 if config.get('selection','type') == 'regression':
     reco_type = 'regression'
-else :
+else:
     reco_type = 'classification'
 
 plt.figure(1)

@@ -9,7 +9,8 @@ from shutil import copyfile
 
 from keras.callbacks import ModelCheckpoint
 from sklearn.preprocessing import StandardScaler
-from sklearn.externals import joblib
+from joblib import dump, load
+#from sklearn.externals import joblib
 from keras import metrics
 from keras import losses
 from keras import optimizers
@@ -105,7 +106,8 @@ class TrainingHandler():
         self.data_train_scaled = scaler.transform(self.data_train)
         self.data_val_scaled = scaler.transform(self.data_val)
 
-        joblib.dump(scaler, self.properties['output-folder']+ "/scaler.pkl")
+        #joblib.dump(scaler, self.properties['output-folder']+ "/scaler.pkl")
+        dump(scaler, self.properties['output-folder']+ "/scaler.pkl")
 
         if self.properties['scale-label'] == '1':
             label_scaler = StandardScaler()
@@ -118,7 +120,8 @@ class TrainingHandler():
                 self.labels_train = label_scaler.transform(self.labels_train)
                 self.labels_val = label_scaler.transform(self.labels_val)
 
-            joblib.dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
+            #joblib.dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
+            dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
 
         model = Model.build(self.properties)
 

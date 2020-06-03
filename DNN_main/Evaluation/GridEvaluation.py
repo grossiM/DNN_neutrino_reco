@@ -10,7 +10,8 @@ import pickle
 
 from keras.models import load_model
 from sklearn.preprocessing import StandardScaler
-from sklearn.externals import joblib
+#from sklearn.externals import joblib
+from joblib import dump, load
 from sklearn.metrics import roc_auc_score, roc_curve
 
 import matplotlib.pyplot as plt
@@ -119,15 +120,18 @@ class GridEvaluation():
         model = load_model(model_name)
 
         scaler_name = path + '/scaler.pkl'
-        scaler = joblib.load(scaler_name)
+        #scaler = joblib.load(scaler_name)
+        scaler = load(scaler_name)
 
         data_scaled = scaler.transform(self.data_eval[sample])
 
         pred = model.predict(data_scaled)
-
+        
         label_sc_name = path + '/label_scaler.pkl'
         if os.path.exists(label_sc_name):
-            label_scaler = joblib.load(label_sc_name)
+            #label_scaler = joblib.load(label_sc_name)
+            label_scaler = load(label_sc_name)
+
             pred = label_scaler.inverse_transform(pred)
 
         if int(self.config.get('output','save-steps'))==1: # check this!

@@ -3,6 +3,7 @@ import sys
 import math
 
 from ROOT import TLorentzVector
+from ROOT import TVector2
 
 def abcdelta_iteration(l_px, l_py, l_pz, l_e, v_px, v_py, mW=80.385):
 
@@ -115,7 +116,6 @@ calc_mass = np.vectorize(calc_mass_iterate)
 def vector_manipulation_iterate(lp, vp):
     W = lp + vp
     
-    #return vplus.Dot(Wplus)
     return np.dot(vp, W)
 
 
@@ -148,8 +148,6 @@ def vector_manipulation(pdarray, variables):
 
 def tag_selectioncriteria_iteration( a, b, pLplus, pLminus, v_pz, v_mu_sol0, v_mu_sol1):
     
-    #sign =  round(np.random.uniform(0,1))*2 -1
-    #random = (-b + sign*math.sqrt(delta))/2/a
     random = round(np.random.uniform(0,1))
     ######## sel 1 ###########
     if ((pLplus < 5000 and pLminus < 5000) or (pLplus > 5000 and pLminus > 5000) ):
@@ -232,3 +230,79 @@ def tag_selectioncriteria( pdarray, flavour):
 
     return sel1,sel2,sel3,sel4,sel5
 
+def get_maos(pdarray, niter):
+
+    try:
+        mux = pdarray['mu_px']
+        muy = pdarray['mu_py']
+        elx = pdarray['el_px']
+        ely = pdarray['el_py']
+        metx = pdarray['pv_xx']
+        mety = pdarray['pv_yy']
+        
+    except:
+        print('Error: muon or electron or MET do not exist.')
+        sys.exit(1)
+
+    vectorized_maos = np.vectorize(maos_event)
+    mt2,p1x,p1y,p2x,p2y = vectorized_maos(mux,muy,elx,ely,metx,mety,niter)
+
+    return mt2,p1x,p1y,p2x,p2y
+
+def maos_event( qx, qy, px, py, rx, ry, niter):
+
+    p2 = TVector2(px,py)
+    q2 = TVector2(qx,qy)
+    r2 = TVector2(rx,ry)
+    k2 = TVector2()
+
+    d2 = q2 + p2
+    p = p2.Mod()
+    q = q2.Mod()
+    r = r2.Mod()
+    d = d2.Mod()
+    qr = q2*r2
+
+    fx = d2*r2/d
+    fy = d2*r2.Rotate(np.pi/2.0)/d
+
+    phi0 = d2.Phi()
+    mt2 = -1.0
+
+    dphi = 2*np.pi/niter
+
+    for phi in np.arange(0,2*np.pi,dphi):
+        
+        co = np.cos(phi)
+        si = np.sin(phi)
+        a = (p - d*co)**2 - q**2
+        b = - 2*d*co*qr + 2*p*qr + 2*q**2*(co*fx + si*fy)
+        c = qr**2 - (r*q)**2
+        delta = b**2 - 4*a*c
+
+        if delta >= 0:
+            k0 = (-b + math.sqrt(delta))/2/a
+            k1 = (-b - math.sqrt(delta))/2/a
+
+            v0 = 2*p*k0*(1 - np.cos(phi + phi0 - p2.Phi()))
+            v1 = 2*p*k1*(1 - np.cos(phi + phi0 - p2.Phi()))
+
+            if v0 < 0 and v1 < 0: continue
+            if v0 >= 0: MT20 = math.sqrt(v0)
+            else: MT20 = mt2 + 1.0
+            if v1 >= 0: MT21 = math.sqrt(v1)
+            else: MT21 = mt2 + 1.0
+
+            if mt2 == -1:
+                if k0 > 0: mt2 = MT20
+                elif k1 > 0: mt2 = MT21
+
+            if MT20 <= mt2 and k0 > 0:
+                mt2 = MT20
+                k2.SetMagPhi(k0,phi + phi0)
+
+            if MT21 <= mt2 and k1 > 0:
+                mt2 = MT21
+                k2.SetMagPhi(k1,phi + phi0)
+
+    return mt2,k2.Px(),k2.Py(),(r2-k2).Px(),(r2-k2).Py()

@@ -35,6 +35,8 @@ parser.add_argument('-s', '--separation', type=str, required=False, default='1')
 parser.add_argument('-nev', '--nevents', type=int, required=False, default=-1)
 args = parser.parse_args()
 
+n_events = args.nevents
+
 if not os.path.exists(args.output_folder):
     os.makedirs(args.output_folder)
 
@@ -63,6 +65,7 @@ else:
 ##########################################################################
 data_handler = DataHandler.DataHandler(args.input, 'tree', True, columns)
 ##########################################################################
+data_handler.pdarray = data_handler.pdarray[:n_events]
 # #muon part
 data_handler.calcCosTheta(['mu_px', 'mu_py', 'mu_pz', 'mu_E', 'v_mu_px', 'v_mu_py', 'v_mu_pz', 'v_mu_E'],'mu_truth')
 #data_handler.appendMass(variables_sol1m,'event1_mu')#in a different way
@@ -77,6 +80,8 @@ data_handler.getPtvv(['v_mu_pt','v_el_pt'])
 data_handler.getPv_xx(['v_mu_px','v_el_px'])
 data_handler.getPv_yy(['v_mu_py','v_el_py'])
 
+data_handler.getMAOS(2000) # 2000 iterations to find the minimum of MT2
+
 #dropping branch according to selected channel
 #BE CAREFUL!!! LEPTONIC BRANCHES WILL BE RENAMED TO MIMIC SEMILEPTONIC CHANNEL (THIS PART MUST BE DELETED WHEN STUDING REAL FULL LEPTONIC CASE)
 if args.channel == 1:
@@ -85,7 +90,6 @@ else:
     data_handler.pdarray = data_handler.pdarray.drop(labels=['mu_p4','v_mu_p4','q_init1_p4','q_init2_p4','q_fin1_p4','q_fin2_p4','q_fin3_p4','q_fin4_p4'],axis=1)
 
 #########
-n_events = args.nevents
 
 if n_events > data_handler.pdarray.shape[0]:
     raise ValueError('wrong number of events selected, the maximum number available for training is:' + str(data_handler.pdarray.shape[0]))

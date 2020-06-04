@@ -40,63 +40,15 @@ if not os.path.exists(args.output_folder):
 
 print(">>> Loading datasets...")
 
-event_variables = []
-event_variables.append(['mu_px', 'mu_py', 'mu_pz', 'mu_E'])#[particles variables]
-event_variables.append(['q_fin_px1', 'q_fin_py1', 'q_fin_pz1', 'q_fin_E1'])
-event_variables.append(['q_fin_px2', 'q_fin_py2', 'q_fin_pz2', 'q_fin_E2'])
-
-if args.channel == 1:
-    print('full leptonic sample')
-    columns={'el_px': 'q_fin_px3', 'el_py': 'q_fin_py3','el_pz': 'q_fin_pz3','el_E': 'q_fin_E3', 'v_el_px': 'q_fin_px4', 'v_el_py': 'q_fin_py4','v_el_pz': 'q_fin_pz4','v_el_E': 'q_fin_E4'}
-
-else:
-    print('semi leptonic channel sample')
-    columns={}
-
-event_variables.append(['q_fin_px3', 'q_fin_py3', 'q_fin_pz3', 'q_fin_E3'])#semileptonic
-event_variables.append(['q_fin_px4', 'q_fin_py4', 'q_fin_pz4', 'q_fin_E4'])##semileptonic
-
-#else:
-    #print('polarized sample')
-    #event_variables.append(['el_px', 'el_py', 'el_pz', 'el_E']) 
-    #event_variables.append(['v_el_px', 'v_el_py', 'v_el_pz', 'v_el_E'])
-variables_sol0 = event_variables
-variables_sol1 = event_variables
-
-variables_sol0.append(['v_mu_px', 'v_mu_py', 'v_mu_sol0', 'v_mu_predict_E0'])
-variables_sol1.append(['v_mu_px', 'v_mu_py', 'v_mu_sol1', 'v_mu_predict_E1'])
-
-
-
-data_handler = DataHandler.DataHandler(args.input, 'tree', True, columns)
-
-data_handler.appendQuadEqParams()
-data_handler.filter('mu_delta >= 0')#we will remove it in regression sooner or later
-data_handler.appendTwoSolutions('mu')
-data_handler.appendEnergy('mu')
-data_handler.calcCosTheta(['mu_px', 'mu_py', 'mu_pz', 'mu_E', 'v_mu_px', 'v_mu_py', 'v_mu_pz', 'v_mu_E'],'truth')
-data_handler.calcCosTheta(['mu_px', 'mu_py', 'mu_pz', 'mu_E', 'v_mu_px', 'v_mu_py', 'v_mu_sol0', 'v_mu_predict_E0'],'sol0')
-data_handler.calcCosTheta(['mu_px', 'mu_py', 'mu_pz', 'mu_E', 'v_mu_px', 'v_mu_py', 'v_mu_sol1', 'v_mu_predict_E1'],'sol1')
-data_handler.appendMass(variables_sol0, 'event0')
-data_handler.appendMass(variables_sol1,'event1')
-
-data_handler.getPtEtaPhi('mu')
-data_handler.getPtEtaPhi('v_mu')
-
-#dropping branch according to selected channel
-#BE CAREFUL!!! LEPTONIC BRANCHES WILL BE RENAMED TO MIMIC SEMILEPTONIC CHANNEL (THIS PART MUST BE DELETED WHEN STUDING REAL FULL LEPTONIC CASE)
-if args.channel == 1:
-    data_handler.pdarray = data_handler.pdarray.drop(labels=['mu_p4','v_mu_p4','q_init1_p4','q_init2_p4','q_fin1_p4','q_fin2_p4'],axis=1)
-else:
-    data_handler.pdarray = data_handler.pdarray.drop(labels=['mu_p4','v_mu_p4','q_init1_p4','q_init2_p4','q_fin1_p4','q_fin2_p4','q_fin3_p4','q_fin4_p4'],axis=1)
-
 n_events = args.nevents
 
-if n_events > data_handler.pdarray.shape[0]:
-    raise ValueError('wrong number of events selected, the maximum number available for training is:' + str(data_handler.pdarray.shape[0]))
-elif n_events == -1 :
-    n_events = data_handler.pdarray.shape[0]
+import pandas as pd
+df = pd.read_csv(args.input)
 
+if n_events > df.shape[0]:
+    raise ValueError('wrong number of events selected, the maximum number available for training is:' + str(df.shape[0]))
+elif n_events == -1 :
+    n_events = df.shape[0]
 
 #create training and evaluation dataset from original file
 fractions = [float(i) for i in args.separation.split(':')]
@@ -115,7 +67,7 @@ for fraction in fractions:
     indeces.append(curr_ind) 
 
 for i in range(len(indeces)-1):
-    data = data_handler.pdarray[indeces[i]:indeces[i+1]]
+    data = df[indeces[i]:indeces[i+1]]
     #name = args.output_folder + '/' + args.name + str(fractions[i]) +'_' +str(i)
     name = args.output_folder + '/' + args.name + str(fractions[i])
     if i == 0:

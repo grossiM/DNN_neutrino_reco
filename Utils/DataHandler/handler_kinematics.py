@@ -264,7 +264,7 @@ def maos_event( qx, qy, px, py, rx, ry, niter):
     qr = q2*r2
 
     fx = d2*r2/d
-    fy = d2*r2.Rotate(np.pi/2.0)/d
+    fy = d2*r2.Rotate(-np.pi/2.0)/d
 
     phi0 = d2.Phi()
     mt2 = -1.0

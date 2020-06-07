@@ -17,9 +17,9 @@ import copy
 import argparse
 import tables
 
-repo= os.environ['NEW_REPO']
-sys.path.append(repo + '/DNN_neutrino_reco/Utils/DataHandler')
-import DataHandler
+#repo= os.environ['NEW_REPO']
+#sys.path.append(repo + '/DNN_neutrino_reco/Utils/DataHandler')
+#import DataHandler
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-in', '--input', type=str, required=False)
 parser.add_argument('-o', '--output-folder', type=str, required=True)#output folder 
 parser.add_argument('-n', '--name', type=str, required=True)#basename of the file
-parser.add_argument('-ch', '--channel', type=int, required=True)#channel type if semilept =0 full lep =1
+#parser.add_argument('-ch', '--channel', type=int, required=True)#channel type if semilept =0 full lep =1
 parser.add_argument('-s', '--separation', type=str, required=False, default='1')# ex. '0.2:0.4:0.4' separation of dataset between training, test, evaluation 
 parser.add_argument('-nev', '--nevents', type=int, required=False, default=-1)
 args = parser.parse_args()

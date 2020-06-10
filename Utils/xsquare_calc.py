@@ -46,7 +46,7 @@ for f in config.get('input','data').split(','):
     outfile.write(f)
     outfile.write("\n")
     print('looping through all models:')
-    for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*'):
+    for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_e100'):
         chi_statistic, p_value = chisquare(hdf_f[i], hdf_f[truth])
         rmse = mean_squared_error(hdf_f[truth],hdf_f[i], squared=False)
         outfile.write("model: ")
@@ -56,5 +56,6 @@ for f in config.get('input','data').split(','):
         #outfile.write("\n")
         outfile.write("rmse = {:.3f}\n".format(round(rmse, 3)))
         #outfile.write("\n")
+print('file saved in: ' + where_save )
       
     

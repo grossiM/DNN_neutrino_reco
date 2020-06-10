@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #################################
-# M. Grossi - J.Novak #2019
+# M. Grossi - J.Novak # May 2020
 ################################
 #macro that search for root hist in folder path and create npz files and pdf plot with specific name convention
 ########################

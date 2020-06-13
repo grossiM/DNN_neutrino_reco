@@ -59,13 +59,20 @@ to_rm = config.get('selection','discard').split(',')
 print(' \n model discarded: {0} '.format(str(to_rm)))
 
 ###
+long_rm = hdf_long.columns[hdf_long.isna().any()].tolist()
+print('Models containing Nan: \n {0}'.format(long_rm))
+trans_rm = hdf_trans.columns[hdf_trans.isna().any()].tolist()
+
+hdf_long = hdf_long.drop(long_rm,axis=1)
+hdf_trans = hdf_trans.drop(trans_rm,axis=1)
+
 for model_to_rm in to_rm:
     bad_mod = fnmatch.filter(hdf_long.columns, '*'+ model_to_rm + '*')
     #bad_mod = fnmatch.filter(hdf_long.columns, model_to_rm)
     print('discarded branches:')
     print(bad_mod)
     hdf_long = hdf_long.drop(bad_mod,axis=1)
-    hdf_trans.drop(bad_mod,axis=1)
+    hdf_trans = hdf_trans.drop(bad_mod,axis=1)
 
 ###
 #################################################################plotting
@@ -80,11 +87,26 @@ good_el_l = []
 good_mu_t = []
 good_el_t = []
 
+good_mu_pxl = []
+good_mu_pyl = []
+good_mu_pxt = []
+good_mu_pyt = []
+
+good_el_pxl = []
+good_el_pyl = []
+good_el_pxt = []
+good_el_pyt = []
+
 cos2_long = {}
 cos2_trans = {}
+
+ptt_long = {}
+ptt_trans = {}
+
 for wildcard in config.get('selection','wildcard').split(','):
 
     if config.get('selection','type') == 'regcostheta':
+        print(' Plotting regression on costheta')
         #map cat0= el_truth_cos_theta, cat1= mu_truth_cos_theta --> neu60hid2bat64_cat0_e100  neu60hid2bat64_cat1_e100
         lep_cat_list = ['cat0','cat1']
         ##########long
@@ -100,26 +122,42 @@ for wildcard in config.get('selection','wildcard').split(','):
     
 
         good_mu_l = good_mu_l + fnmatch.filter(mu_cos_list_long,wildcard + '*')
-        #neu60hid2bat64_cat1_e100,neu60hid3bat64_cat1_e100, neu60hid4bat64_cat1_e100
         good_el_l = good_el_l + fnmatch.filter(el_cos_list_long,wildcard + '*')
-        #neu60hid2bat64_cat0_e100,neu60hid3bat64_cat0_e100, neu60hid4bat64_cat0_e100
         good_mu_t = good_mu_t + fnmatch.filter(mu_cos_list_trans,wildcard + '*')
-        #neu60hid2bat64_cat1_e100,neu60hid3bat64_cat1_e100, neu60hid4bat64_cat1_e100
         good_el_t = good_el_t + fnmatch.filter(el_cos_list_trans,wildcard + '*')
-        #neu60hid2bat64_cat0_e100,neu60hid3bat64_cat0_e100, neu60hid4bat64_cat0_e100
-    else:
-        print('ciao bello')
+        
+    elif config.get('selection','type') == 'regneutrinos':
+        print(' Plotting regression on total pt of neutrinos')
+        #mapping from training config: mapping={'cat0': 'v_mu_px', 'cat1': 'v_mu_py','cat2': 'v_mu_pz','cat3': 'v_el_px', 'cat4': 'v_el_py', 'cat5': 'v_el_pz'}
+        lep_cat_list = ['cat0','cat1','cat3', 'cat4']
+        ##########long
+        #muon
+        mu_px_list_long = (fnmatch.filter(hdf_long.columns, '*'+lep_cat_list[0]+'*'))
+        mu_py_list_long = (fnmatch.filter(hdf_long.columns, '*'+lep_cat_list[1]+'*'))
+        #electron
+        el_px_list_long = (fnmatch.filter(hdf_long.columns, '*'+lep_cat_list[2]+'*'))
+        el_py_list_long = (fnmatch.filter(hdf_long.columns, '*'+lep_cat_list[3]+'*'))
+        ##########trans
+        #muon
+        mu_px_list_trans = (fnmatch.filter(hdf_trans.columns, '*'+lep_cat_list[0]+'*'))
+        mu_py_list_trans= (fnmatch.filter(hdf_trans.columns, '*'+lep_cat_list[1]+'*'))
+        #electron
+        el_px_list_trans = (fnmatch.filter(hdf_trans.columns, '*'+lep_cat_list[2]+'*'))
+        el_py_list_trans = (fnmatch.filter(hdf_trans.columns, '*'+lep_cat_list[3]+'*'))
 
-    # #file manipulation
-    # #long
-    # for i,j in zip(mu_cos_list_long,el_cos_list_long):
-    #     ##create concatenate dataframe, append like
-    #     cos2_long[i] = pd.DataFrame()
-    #     cos2_long[i] = pd.concat([hdf_long[i],hdf_long[j]])
-    # #trans
-    # for p,q in zip(mu_cos_list_trans,el_cos_list_trans):
-    #     cos2_trans[p] = pd.DataFrame()
-    #     cos2_trans[p] = pd.concat([hdf_long[i],hdf_long[j]])
+
+        good_mu_pxl = good_mu_pxl + fnmatch.filter(mu_px_list_long,wildcard + '*')
+        good_mu_pyl = good_mu_pyl + fnmatch.filter(mu_py_list_long,wildcard + '*')
+        good_mu_pxt = good_mu_pxt + fnmatch.filter(mu_px_list_trans,wildcard + '*')
+        good_mu_pyt = good_mu_pyt + fnmatch.filter(mu_py_list_trans,wildcard + '*')
+
+        good_el_pxl = good_el_pxl + fnmatch.filter(el_px_list_long,wildcard + '*')
+        good_el_pyl = good_el_pyl + fnmatch.filter(el_py_list_long,wildcard + '*')
+        good_el_pxt = good_el_pxt + fnmatch.filter(el_px_list_trans,wildcard + '*')
+        good_el_pyt = good_el_pyt + fnmatch.filter(el_py_list_trans,wildcard + '*')
+    else:
+        print('wrong selection type')
+
 """"""
 def plot_multicos(name_el_l,name_mu_l,name_el_t,name_mu_t,avlb_pol, where):
 
@@ -128,7 +166,47 @@ def plot_multicos(name_el_l,name_mu_l,name_el_t,name_mu_t,avlb_pol, where):
         pattern = config.get('legend','entry').split(':')
         entry = re.sub(pattern[0],pattern[1], name_el_l.rstrip())
         
-        entry = re.sub('_cat0_e100', '', entry)
+        entry = re.sub('_cat0_pred', '', entry)
+        entry = re.sub('_cat0_e100','',entry)
+
+        print(entry)
+        if (config.get('plotting', 'normalize') == '1'):
+            normalize = True
+        else:
+            normalize = False
+
+        if pol_type == 'long':
+            plt.figure(1)
+            plt.legend()
+            #cos2_long[name_el_l] = pd.DataFrame()
+            cos2_long[name_el_l] = pd.concat([hdf_long[name_el_l],hdf_long[name_mu_l]])
+            
+            h_long = plt.hist(cos2_long[name_el_l].values, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
+
+        elif pol_type == 'trans':
+            plt.figure(2)
+            plt.legend()
+            #cos2_trans[name_el_t] = pd.DataFrame()
+            cos2_trans[name_el_t] = pd.concat([hdf_trans[name_el_t],hdf_trans[name_mu_t]])
+
+            h_trans = plt.hist(cos2_trans[name_el_t].values, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
+
+        else:
+            print('wrong polarization')
+    np.savez(where + '/h_' + entry, trans=h_trans, long=h_long)
+
+""""""
+""""""
+def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name_el_ty,name_mu_tx,name_mu_ty,avlb_pol, where):
+
+    for pol_type in avlb_pol:
+
+        pattern = config.get('legend','entry').split(':')
+        entry = re.sub(pattern[0],pattern[1], name_el_lx.rstrip())
+        
+        entry = re.sub('_cat0_pred', '', entry)
+        entry = re.sub('_cat0_e100','', entry)
+        entry = re.sub('_cat3_e100','', entry)
 
         if (config.get('plotting', 'normalize') == '1'):
             normalize = True
@@ -138,22 +216,30 @@ def plot_multicos(name_el_l,name_mu_l,name_el_t,name_mu_t,avlb_pol, where):
         if pol_type == 'long':
             plt.figure(1)
             plt.legend()
-            cos2_long[name_el_l] = pd.DataFrame()
-            cos2_long[name_el_l] = pd.concat([hdf_long[name_el_l],hdf_long[name_mu_l]])
-            h_long = plt.hist(cos2_long[name_el_l].values, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
+            hdf_long[name_el_lx[:-10]+'_v_el_pt'] = np.sqrt(hdf_long[name_el_lx]**2 + hdf_long[name_el_ly]**2)
+            hdf_long[name_mu_lx[:-10]+'_v_mu_pt'] = np.sqrt(hdf_long[name_mu_lx]**2 + hdf_long[name_mu_ly]**2)
+            ptt_long[entry+'_ptvv'] = pd.DataFrame()
+            ptt_long[entry+'_ptvv'] = pd.concat([hdf_long[name_el_lx[:-10]+'_v_el_pt'],hdf_long[name_mu_lx[:-10]+'_v_mu_pt']])
+        
+            h_long = plt.hist(ptt_long[entry+'_ptvv'].values, bins = 100, label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
             plt.figure(2)
             plt.legend()
-            cos2_trans[name_el_t] = pd.DataFrame()
-            cos2_trans[name_el_t] = pd.concat([hdf_trans[name_el_t],hdf_trans[name_mu_t]])
-            h_trans = plt.hist(cos2_trans[name_el_t].values, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
+            hdf_trans[name_el_tx[:-10]+'_v_el_pt'] = np.sqrt(hdf_trans[name_el_tx]**2 + hdf_trans[name_el_ty]**2)
+            hdf_trans[name_mu_tx[:-10]+'_v_mu_pt'] = np.sqrt(hdf_trans[name_mu_tx]**2 + hdf_trans[name_mu_ty]**2)
+            ptt_trans[entry+'_ptvv'] = pd.DataFrame()
+            ptt_trans[entry+'_ptvv'] = pd.concat([hdf_trans[name_el_tx[:-10]+'_v_el_pt'],hdf_trans[name_mu_tx[:-10]+'_v_mu_pt']])
+            # print('T'*120)
+            # print(ptt_trans[entry+'_ptvv'][:15])
+            # print('*'*120)
+            # print('*'*120)
+            # print('*'*120)
+            h_trans = plt.hist(ptt_trans[entry+'_ptvv'].values, bins = 100, label=entry, density=normalize, histtype='step', linewidth=2)
 
         else:
             print('wrong polarization')
     np.savez(where + '/h_' + entry, trans=h_trans, long=h_long)
-    #np.savez(where + '/h_' + name, unpol=h_unpol, trans=h_trans, long=h_long, fulcomp = h_full)
-
 """"""
 
 if (config.get('plotting', 'normalize') == '1'):
@@ -168,14 +254,27 @@ if (config.get('plotting', 'truth') == '1'):
     if config.get('selection','type') == 'regcostheta':
         cos2_long['truth_cos_thetas'] = pd.concat([hdf_long['mu_truth_cos_theta'],hdf_long['el_truth_cos_theta']])
         h_long_true = plt.hist(cos2_long['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
+    
+    elif config.get('selection','type') == 'regneutrinos':
+        ptt_long['pt_vv_truth'] = pd.concat([hdf_long['v_mu_pt'],hdf_long['v_el_pt']])
+        h_long_true = plt.hist(ptt_long['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
+        #pt_inf = min(hdf_long['pt_vv'])
+        #pt_max = min(hdf_long['pt_vv'])
+
     else: print('wrong selection type')   
-# #########transverse
+# #########TRANSVERSE
 fig_trans = plt.figure(2)
 if (config.get('plotting', 'truth') == '1'):
     if config.get('selection','type') == 'regcostheta':
         cos2_trans['truth_cos_thetas'] = pd.concat([hdf_trans['mu_truth_cos_theta'],hdf_trans['el_truth_cos_theta']])
-        h_trans_true = plt.hist(cos2_trans['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='mu Truth')
+        h_trans_true = plt.hist(cos2_trans['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth cos')
+    
+    elif config.get('selection','type') == 'regneutrinos':
+        ptt_trans['pt_vv_truth'] = pd.concat([hdf_trans['v_mu_pt'],hdf_trans['v_el_pt']])
+        h_trans_true = plt.hist(ptt_trans['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth PT')
+        print(ptt_trans['pt_vv_truth'][:15])
 
+    else: print('wrong selection type')    
 # ########################   saving all truth things
 if (config.get('plotting', 'truth') == '1'):
     np.savez(where_save + '/h_truth',trans=h_trans_true, long=h_long_true)
@@ -183,10 +282,19 @@ if (config.get('plotting', 'truth') == '1'):
 
 #############looping through selected model
 print('looping through selected models:')
-for i,j,p,q in zip(good_el_l,good_mu_l,good_el_t,good_mu_t):
-    #print(i)
-    plot_multicos(i,j,p,q,pol_list,where_save)
-        #raise ValueError('Error: wrong evaluation type selected')
+if config.get('selection','type') == 'regcostheta':
+    xlabel = 'cos'+r'$\theta$'
+    for i,j,p,q in zip(good_el_l,good_mu_l,good_el_t,good_mu_t):
+        plot_multicos(i,j,p,q,pol_list,where_save)
+        print(i)
+elif config.get('selection','type') == 'regneutrinos':
+    xlabel = 'pt'+r'$_{\nu\nu}$'
+    for i,j,k,l,p,q,r,s in zip(good_el_pxl,good_el_pyl,good_mu_pxl,good_mu_pyl,good_el_pxt,good_el_pyt,good_mu_pxt,good_mu_pyt):
+        plot_neutrinospt(i,j,k,l,p,q,r,s,pol_list,where_save)
+        print(i)
+else:
+    raise ValueError('Error: wrong evaluation type selected')
+
 print('plotting executed')
 ######################################################
 
@@ -195,7 +303,7 @@ art_l = []
 lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1),ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_l.append(lgd_l)
 #plt.title('Longitudinal polarization, '+reco_type)
-plt.xlabel('cos'+r'$\theta$')
+plt.xlabel(xlabel)
 plt.ylabel('Number of events')
 
 
@@ -204,7 +312,7 @@ art_t = []
 lgd_t = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_t.append(lgd_t)
 #plt.title('Transverse polarization, '+reco_type)
-plt.xlabel('cos'+r'$\theta$')
+plt.xlabel(xlabel)
 plt.ylabel('Number of events')
 
 fig_long.savefig(where_save + '/theta_long.pdf', additional_artists=art_l,bbox_inches="tight")

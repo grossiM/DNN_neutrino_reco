@@ -19,7 +19,7 @@ def build(properties):
         if not 'dropout-rate' in properties:
             raise ValueError('Property dropout-rate is required in the section training')
         if not 'output-dim' in properties:
-            raise ValueError('Property dropout-rate is required in the section training')
+            raise ValueError('Property output-dim is required in the section training')
         model = Sequential()
 
         properties['hidden-layers'] = int(properties['hidden-layers'])

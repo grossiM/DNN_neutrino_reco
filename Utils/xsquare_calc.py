@@ -41,14 +41,22 @@ truth = config.get('input','truth-label')
 for f in config.get('input','data').split(','):  
     print(f)
     hdf_f = pd.read_hdf(f)
+    if config.get('selection','type') == 'binary':
+      s_l = hdf_f[['sol0_cos_theta','sol1_cos_theta']].values
     #############looping through all model
     outfile.write('File: ')
     outfile.write(f)
     outfile.write("\n")
     print('looping through all models:')
     for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_e100'):
-        chi_statistic, p_value = chisquare(hdf_f[i], hdf_f[truth])
-        rmse = mean_squared_error(hdf_f[truth],hdf_f[i], squared=False)
+        if config.get('selection','type') == 'binary':
+          score_l = hdf_f[i]
+          cos_l = [s_l[i, int(not bool(sign))] for i, sign in enumerate(score_l)]
+          chi_statistic, p_value = chisquare(cos_l, hdf_f[truth])
+          rmse = mean_squared_error(hdf_f[truth],cos_l, squared=False)
+        else:
+          chi_statistic, p_value = chisquare(hdf_f[i], hdf_f[truth])
+          rmse = mean_squared_error(hdf_f[truth],hdf_f[i], squared=False)
         outfile.write("model: ")
         outfile.write(str(i))
         outfile.write("\n")

@@ -168,6 +168,7 @@ def plot_multicos(name_el_l,name_mu_l,name_el_t,name_mu_t,avlb_pol, where):
         
         entry = re.sub('_cat0_pred', '', entry)
         entry = re.sub('_cat0_e100','',entry)
+        entry = entry.split('bat')[0]
 
         print(entry)
         if (config.get('plotting', 'normalize') == '1'):
@@ -207,6 +208,7 @@ def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name
         entry = re.sub('_cat0_pred', '', entry)
         entry = re.sub('_cat0_e100','', entry)
         entry = re.sub('_cat3_e100','', entry)
+        entry = entry.split('bat')[0]
 
         if (config.get('plotting', 'normalize') == '1'):
             normalize = True
@@ -231,6 +233,7 @@ def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name
             ptt_trans[entry+'_ptvv'] = pd.DataFrame()
             ptt_trans[entry+'_ptvv'] = pd.concat([hdf_trans[name_el_tx[:-10]+'_v_el_pt'],hdf_trans[name_mu_tx[:-10]+'_v_mu_pt']])
             # print('T'*120)
+            # print('ptt_trans')
             # print(ptt_trans[entry+'_ptvv'][:15])
             # print('*'*120)
             # print('*'*120)
@@ -253,11 +256,11 @@ fig_long = plt.figure(1)
 if (config.get('plotting', 'truth') == '1'):
     if config.get('selection','type') == 'regcostheta':
         cos2_long['truth_cos_thetas'] = pd.concat([hdf_long['mu_truth_cos_theta'],hdf_long['el_truth_cos_theta']])
-        h_long_true = plt.hist(cos2_long['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
+        h_long_true = plt.hist(cos2_long['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Longitudinal')
     
     elif config.get('selection','type') == 'regneutrinos':
         ptt_long['pt_vv_truth'] = pd.concat([hdf_long['v_mu_pt'],hdf_long['v_el_pt']])
-        h_long_true = plt.hist(ptt_long['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
+        h_long_true = plt.hist(ptt_long['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Longitudinal')
         #pt_inf = min(hdf_long['pt_vv'])
         #pt_max = min(hdf_long['pt_vv'])
 
@@ -267,11 +270,11 @@ fig_trans = plt.figure(2)
 if (config.get('plotting', 'truth') == '1'):
     if config.get('selection','type') == 'regcostheta':
         cos2_trans['truth_cos_thetas'] = pd.concat([hdf_trans['mu_truth_cos_theta'],hdf_trans['el_truth_cos_theta']])
-        h_trans_true = plt.hist(cos2_trans['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth cos')
+        h_trans_true = plt.hist(cos2_trans['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Transverse')
     
     elif config.get('selection','type') == 'regneutrinos':
         ptt_trans['pt_vv_truth'] = pd.concat([hdf_trans['v_mu_pt'],hdf_trans['v_el_pt']])
-        h_trans_true = plt.hist(ptt_trans['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth PT')
+        h_trans_true = plt.hist(ptt_trans['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Transverse')
         print(ptt_trans['pt_vv_truth'][:15])
 
     else: print('wrong selection type')    
@@ -284,11 +287,14 @@ if (config.get('plotting', 'truth') == '1'):
 print('looping through selected models:')
 if config.get('selection','type') == 'regcostheta':
     xlabel = 'cos'+r'$\theta$'
+    file_name = '/theta'
     for i,j,p,q in zip(good_el_l,good_mu_l,good_el_t,good_mu_t):
         plot_multicos(i,j,p,q,pol_list,where_save)
         print(i)
+
 elif config.get('selection','type') == 'regneutrinos':
     xlabel = 'pt'+r'$_{\nu\nu}$'
+    file_name = '/pt_vv'
     for i,j,k,l,p,q,r,s in zip(good_el_pxl,good_el_pyl,good_mu_pxl,good_mu_pyl,good_el_pxt,good_el_pyt,good_mu_pxt,good_mu_pyt):
         plot_neutrinospt(i,j,k,l,p,q,r,s,pol_list,where_save)
         print(i)
@@ -297,7 +303,6 @@ else:
 
 print('plotting executed')
 ######################################################
-
 plt.figure(1)
 art_l = []
 lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1),ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
@@ -315,8 +320,8 @@ art_t.append(lgd_t)
 plt.xlabel(xlabel)
 plt.ylabel('Number of events')
 
-fig_long.savefig(where_save + '/theta_long.pdf', additional_artists=art_l,bbox_inches="tight")
-fig_trans.savefig(where_save + '/theta_trans.pdf', additional_artists=art_t,bbox_inches="tight")
+fig_long.savefig(where_save + file_name + '_long.pdf', additional_artists=art_l,bbox_inches="tight")
+fig_trans.savefig(where_save + file_name + '_trans.pdf', additional_artists=art_t,bbox_inches="tight")
 
 copyfile(args.config, where_save+ '/thisconfig.cfg')
 print('figures saved into '+where_save)

@@ -69,7 +69,7 @@ for model_to_rm in to_rm:
     print('discarded branches:')
     print(bad_mod)
     hdf_long = hdf_long.drop(bad_mod,axis=1)
-    hdf_trans.drop(bad_mod,axis=1)
+    hdf_trans = hdf_trans.drop(bad_mod,axis=1)
 
 ###
 #################################################################plotting
@@ -138,16 +138,6 @@ for wildcard in config.get('selection','wildcard').split(','):
     else:
         print('ciao bello')
 
-    # #file manipulation
-    # #long
-    # for i,j in zip(mu_cos_list_long,el_cos_list_long):
-    #     ##create concatenate dataframe, append like
-    #     cos2_long[i] = pd.DataFrame()
-    #     cos2_long[i] = pd.concat([hdf_long[i],hdf_long[j]])
-    # #trans
-    # for p,q in zip(mu_cos_list_trans,el_cos_list_trans):
-    #     cos2_trans[p] = pd.DataFrame()
-    #     cos2_trans[p] = pd.concat([hdf_long[i],hdf_long[j]])
 """"""
 def plot_multicos(name_el_l,name_mu_l,name_el_t,name_mu_t,avlb_pol, where):
 
@@ -157,6 +147,7 @@ def plot_multicos(name_el_l,name_mu_l,name_el_t,name_mu_t,avlb_pol, where):
         entry = re.sub(pattern[0],pattern[1], name_el_l.rstrip())
         
         entry = re.sub('_cat0_e100', '', entry)
+        entry = entry.split('_')[0].split('bat')[0]
 
         if (config.get('plotting', 'normalize') == '1'):
             normalize = True
@@ -195,14 +186,14 @@ fig_long = plt.figure(1)
 if (config.get('plotting', 'truth') == '1'):
     if config.get('selection','type') == 'reg6var':
         cos2_long['truth_cos_thetas'] = pd.concat([hdf_long['mu_truth_cos_theta'],hdf_long['el_truth_cos_theta']])
-        h_long_true = plt.hist(cos2_long['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth')
+        h_long_true = plt.hist(cos2_long['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Longitudinal')
     else: print('wrong selection type')   
 # #########transverse
 fig_trans = plt.figure(2)
 if (config.get('plotting', 'truth') == '1'):
     if config.get('selection','type') == 'reg6var':
         cos2_trans['truth_cos_thetas'] = pd.concat([hdf_trans['mu_truth_cos_theta'],hdf_trans['el_truth_cos_theta']])
-        h_trans_true = plt.hist(cos2_trans['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='mu Truth')
+        h_trans_true = plt.hist(cos2_trans['truth_cos_thetas'],np.arange(b1, b2, b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Transverse')
 
 # ########################   saving all truth things
 if (config.get('plotting', 'truth') == '1'):
@@ -262,8 +253,9 @@ base_trans = trans_orig.split('.')
 base_trans.insert(2,'boosted')
 sample_trans = '.'.join(base_trans)
 
-hdf_long.to_hdf(where_save + '/' + sample_long,'long',mode='w',format ='table')
-hdf_trans.to_hdf(where_save + '/' + sample_trans,'trans',mode='w',format ='table')
+hdf_long.to_hdf(os.path.dirname(config.get('input','data-long')) + '/' + sample_long,'long',mode='w',format ='table')
+hdf_trans.to_hdf(os.path.dirname(config.get('input','data-trans')) + '/' + sample_trans,'trans',mode='w',format ='table')
 
 copyfile(args.config, where_save+ '/thisconfig.cfg')
 print('figures saved into '+where_save)
+print('evaluated boosted file saved into '+ os.path.dirname(config.get('input','data-trans')))

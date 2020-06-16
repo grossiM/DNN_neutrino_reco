@@ -14,8 +14,7 @@ from joblib import dump, load
 from keras import metrics
 from keras import losses
 from keras import optimizers
-#import keras.backend as K
-from tensorflow.keras import backend as K
+import keras.backend as K
 
 import Grid
 import Configurables
@@ -53,8 +52,7 @@ class TrainingHandler():
         self.checkEventNumber()
         self.data_train = pd_train[training_variables].values[:self.properties['number-of-events']]
         self.properties['input_dim'] = len(training_variables)
-        #self.properties['output-dim'] = int(self.properties['output-dim'])
-        self.properties['output-dim'] = len(training_labels)
+        self.properties['output-dim'] = int(self.properties['output-dim'])
         self.labels_train = pd_train[training_labels].values[:self.properties['number-of-events']]
         self.data_val = pd_val[training_variables].values[:self.properties['number-of-events']]
         self.labels_val = pd_val[training_labels].values[:self.properties['number-of-events']]
@@ -142,4 +140,3 @@ class TrainingHandler():
                         callbacks=[auto_save])
                         #early stop to be implemented
         plot_history([('DNN model', history),],self.properties['output-folder'],self.properties['metrics'])
-        

@@ -113,12 +113,16 @@ class TrainingHandler():
             label_scaler = StandardScaler()
             if self.properties['output-dim'] == 1:
                 label_scaler.fit(np.expand_dims(self.labels_train,1))
-                self.labels_train = label_scaler.transform(np.expand_dims(self.labels_train,1))
-                self.labels_val = label_scaler.transform(np.expand_dims(self.labels_val,1))
+                self.labels_train_scaled = label_scaler.transform(np.expand_dims(self.labels_train,1))
+                self.labels_val_scaled = label_scaler.transform(np.expand_dims(self.labels_val,1))
+                #self.labels_train = label_scaler.transform(np.expand_dims(self.labels_train,1))
+                #self.labels_val = label_scaler.transform(np.expand_dims(self.labels_val,1))
             else:
                 label_scaler.fit(self.labels_train)
-                self.labels_train = label_scaler.transform(self.labels_train)
-                self.labels_val = label_scaler.transform(self.labels_val)
+                self.labels_train_scaled = label_scaler.transform(self.labels_train)
+                self.labels_val_scaled = label_scaler.transform(self.labels_val)
+                #self.labels_train = label_scaler.transform(self.labels_train)
+                #self.labels_val = label_scaler.transform(self.labels_val)
 
             #joblib.dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
             dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
@@ -133,8 +137,8 @@ class TrainingHandler():
         else:
             auto_save = ModelCheckpoint(self.properties['output-folder'] + "/current_model", monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=2)
 
-        history = model.fit(self.data_train_scaled, self.labels_train,
-                        validation_data = (self.data_val_scaled, self.labels_val),
+        history = model.fit(self.data_train_scaled, self.labels_train_scaled,
+                        validation_data = (self.data_val_scaled, self.labels_val_scaled),
                         epochs=self.properties['epochs'],
                         batch_size=self.properties['batch-size'], shuffle=True,
                         callbacks=[auto_save])

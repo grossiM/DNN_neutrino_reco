@@ -131,8 +131,12 @@ class GridEvaluation():
         if os.path.exists(label_sc_name):
             #label_scaler = joblib.load(label_sc_name)
             label_scaler = load(label_sc_name)
-
+            orig_pred = pred[:10]
             pred = label_scaler.inverse_transform(pred)
+            if (orig_pred == pred[:10]).all():
+                print('Error in label_scaler for model {0}'.format(model_dir))
+                sys.exit()
+            else: print(' label_scaler OK')
 
         if int(self.config.get('output','save-steps'))==1: # check this!
             epoch = model_ep[19:]

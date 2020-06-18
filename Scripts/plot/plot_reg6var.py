@@ -134,7 +134,6 @@ for wildcard in config.get('selection','wildcard').split(','):
         good_el_t_px = good_el_t_px + fnmatch.filter(el_cos_list_trans_px,wildcard + '*')
         good_el_t_py = good_el_t_py + fnmatch.filter(el_cos_list_trans_py,wildcard + '*')
         good_el_t_pz = good_el_t_pz + fnmatch.filter(el_cos_list_trans_pz,wildcard + '*')
-
     else:
         print('ciao bello')
 
@@ -171,7 +170,6 @@ def plot_multicos(name_el_l,name_mu_l,name_el_t,name_mu_t,avlb_pol, where):
         else:
             print('wrong polarization')
     np.savez(where + '/h_' + entry, trans=h_trans, long=h_long)
-    #np.savez(where + '/h_' + name, unpol=h_unpol, trans=h_trans, long=h_long, fulcomp = h_full)
 
 """"""
 

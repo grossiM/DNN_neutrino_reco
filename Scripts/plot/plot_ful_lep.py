@@ -232,12 +232,7 @@ def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name
             hdf_trans[name_mu_tx[:-10]+'_v_mu_pt'] = np.sqrt(hdf_trans[name_mu_tx]**2 + hdf_trans[name_mu_ty]**2)
             ptt_trans[entry+'_ptvv'] = pd.DataFrame()
             ptt_trans[entry+'_ptvv'] = pd.concat([hdf_trans[name_el_tx[:-10]+'_v_el_pt'],hdf_trans[name_mu_tx[:-10]+'_v_mu_pt']])
-            # print('T'*120)
-            # print('ptt_trans')
-            # print(ptt_trans[entry+'_ptvv'][:15])
-            # print('*'*120)
-            # print('*'*120)
-            # print('*'*120)
+         
             h_trans = plt.hist(ptt_trans[entry+'_ptvv'].values, bins = 100, label=entry, density=normalize, histtype='step', linewidth=2)
 
         else:
@@ -275,7 +270,7 @@ if (config.get('plotting', 'truth') == '1'):
     elif config.get('selection','type') == 'regneutrinos':
         ptt_trans['pt_vv_truth'] = pd.concat([hdf_trans['v_mu_pt'],hdf_trans['v_el_pt']])
         h_trans_true = plt.hist(ptt_trans['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Transverse')
-        print(ptt_trans['pt_vv_truth'][:15])
+        #print(ptt_trans['pt_vv_truth'][:15])
 
     else: print('wrong selection type')    
 # ########################   saving all truth things

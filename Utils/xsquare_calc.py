@@ -48,12 +48,14 @@ for f in config.get('input','data').split(','):
     outfile.write("\n")
     print('looping through all files:')
     print(f)
+    print(config.get('selection','type'))
+
     if config.get('selection','type') == 'binary':
       print('BINARY')
       s_l = hdf_f[['sol0_cos_theta','sol1_cos_theta']].values
       
-      #for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_rounded_score'):
-      for i in fnmatch.filter(hdf_f.columns, config.get('input','model_sel') + '*'):
+      for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_rounded_score'):
+      #for i in fnmatch.filter(hdf_f.columns, config.get('input','model_sel') + '*'):
       #selection criterion
         print(i)
         score_l = hdf_f[i]
@@ -66,6 +68,7 @@ for f in config.get('input','data').split(','):
         #outfile.write("Xsquare = {:.3f} \n".format(round(chi_statistic, 3)))
         outfile.write("rmse = {:.3f}\n".format(round(rmse, 3)))
         list_rmse[str(i)] = round(rmse, 3)
+
     elif config.get('selection','type') == 'semi_regression':
       for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_e100'):
         print(i)
@@ -77,8 +80,12 @@ for f in config.get('input','data').split(','):
         #outfile.write("Xsquare = {:.3f} \n".format(round(chi_statistic, 3)))
         outfile.write("rmse = {:.3f}\n".format(round(rmse, 3)))
         list_rmse[str(i)] = round(rmse, 3)
+
     elif config.get('selection','type') == 'ful_regression':
-      for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + ' *_cat1_*'):
+      print('FULL_REGRESSION')
+      #print(hdf_f.columns)
+      for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_cos'):
+        
         #cat0 electron, cat 1 muon --> *_cat1_*
         #_autoai
         # 6 variables neu60hid2bat64_cos --> '*_cos'

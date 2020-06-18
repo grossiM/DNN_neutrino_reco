@@ -209,16 +209,16 @@ for elx,ely,elz,etx,ety,etz,mlx,mly,mlz,mtx,mty,mtz in \
                     good_el_t_px,good_el_t_py,good_el_t_pz, \
                     good_mu_l_px,good_mu_l_py,good_mu_l_pz, \
                     good_mu_t_px,good_mu_t_py,good_mu_t_pz):
-    print(elx[:-10])
-    hdf_long[elx[:-10]+'_E'] = hdf_long.eval('sqrt('+elx+'**2+'+ely+'**2+'+elz+'**2)')
-    hdf_trans[etx[:-10]+'_E'] = hdf_trans.eval('sqrt('+etx+'**2+'+ety+'**2+'+etz+'**2)')
-    hdf_long[mlx[:-10]+'_E'] = hdf_long.eval('sqrt('+mlx+'**2+'+mly+'**2+'+mlz+'**2)')
-    hdf_trans[mtx[:-10]+'_E'] = hdf_trans.eval('sqrt('+mtx+'**2+'+mty+'**2+'+mtz+'**2)')
-    hdf_long[elx[:-10]+'_cos'] = hk.cos_theta(hdf_long,['el_px','el_py','el_pz','el_E',elx,ely,elz,elx[:-10]+'_E'])
-    hdf_trans[etx[:-10]+'_cos'] = hk.cos_theta(hdf_trans,['el_px','el_py','el_pz','el_E',etx,ety,etz,etx[:-10]+'_E'])
-    hdf_long[mlx[:-10]+'_cos'] = hk.cos_theta(hdf_long,['mu_px','mu_py','mu_pz','mu_E',mlx,mly,mlz,mlx[:-10]+'_E'])
-    hdf_trans[mtx[:-10]+'_cos'] = hk.cos_theta(hdf_trans,['mu_px','mu_py','mu_pz','mu_E',mtx,mty,mtz,mtx[:-10]+'_E'])
-    plot_multicos(elx[:-10]+'_cos',etx[:-10]+'_cos',mlx[:-10]+'_cos',mtx[:-10]+'_cos',pol_list,where_save)
+    print(elx[:-5])
+    hdf_long[elx[:-5]+'_E'] = hdf_long.eval('sqrt('+elx+'**2+'+ely+'**2+'+elz+'**2)')
+    hdf_trans[etx[:-5]+'_E'] = hdf_trans.eval('sqrt('+etx+'**2+'+ety+'**2+'+etz+'**2)')
+    hdf_long[mlx[:-5]+'_E'] = hdf_long.eval('sqrt('+mlx+'**2+'+mly+'**2+'+mlz+'**2)')
+    hdf_trans[mtx[:-5]+'_E'] = hdf_trans.eval('sqrt('+mtx+'**2+'+mty+'**2+'+mtz+'**2)')
+    hdf_long[elx[:-5]+'_cos'] = hk.cos_theta(hdf_long,['el_px','el_py','el_pz','el_E',elx,ely,elz,elx[:-5]+'_E'])
+    hdf_trans[etx[:-5]+'_cos'] = hk.cos_theta(hdf_trans,['el_px','el_py','el_pz','el_E',etx,ety,etz,etx[:-5]+'_E'])
+    hdf_long[mlx[:-5]+'_cos'] = hk.cos_theta(hdf_long,['mu_px','mu_py','mu_pz','mu_E',mlx,mly,mlz,mlx[:-5]+'_E'])
+    hdf_trans[mtx[:-5]+'_cos'] = hk.cos_theta(hdf_trans,['mu_px','mu_py','mu_pz','mu_E',mtx,mty,mtz,mtx[:-5]+'_E'])
+    plot_multicos(elx[:-5]+'_cos',etx[:-5]+'_cos',mlx[:-5]+'_cos',mtx[:-5]+'_cos',pol_list,where_save)
         #raise ValueError('Error: wrong evaluation type selected')
 print('plotting executed')
 ######################################################

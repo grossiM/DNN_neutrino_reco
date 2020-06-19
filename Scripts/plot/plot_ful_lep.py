@@ -5,7 +5,7 @@
   Version 1.0, June 2020
   USAGE: python3  plot_ful_lep.py -c JobOption/***_config.cfg
   """
-#non faccio stacked ma appendo i dataset
+#plot direct cos theta distribution from ful leptonic and pt_vv from 6 components NN
 
 import os
 import sys
@@ -80,7 +80,7 @@ binning = config.get('plotting', 'binning')
 binning = binning.replace('\\', '')
 bins = binning.split(',')
 b1,b2,b3 = float(bins[0]), float(bins[1]), float(bins[2])
-
+print(b1,b2,b3)
 
 good_mu_l = []
 good_el_l = []
@@ -201,14 +201,12 @@ def plot_multicos(name_el_l,name_mu_l,name_el_t,name_mu_t,avlb_pol, where):
 def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name_el_ty,name_mu_tx,name_mu_ty,avlb_pol, where):
 
     for pol_type in avlb_pol:
-
-        pattern = config.get('legend','entry').split(':')
-        entry = re.sub(pattern[0],pattern[1], name_el_lx.rstrip())
         
-        entry = re.sub('_cat0_pred', '', entry)
-        entry = re.sub('_cat0_e100','', entry)
-        entry = re.sub('_cat3_e100','', entry)
-        entry = entry.split('bat')[0]
+        #pattern = config.get('legend','entry').split(':')
+        #entry = re.sub(pattern[0],pattern[1], name_el_lx.rstrip())
+        hid = name_el_lx.split('bat')[0].split('hid')[1]
+        neu = name_el_lx.split('bat')[0].split('hid')[0].split('neu')[1]
+        entry = '{0} neu {1} hid. layers.'.format(neu,hid)
 
         if (config.get('plotting', 'normalize') == '1'):
             normalize = True
@@ -223,7 +221,7 @@ def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name
             ptt_long[entry+'_ptvv'] = pd.DataFrame()
             ptt_long[entry+'_ptvv'] = pd.concat([hdf_long[name_el_lx[:-10]+'_v_el_pt'],hdf_long[name_mu_lx[:-10]+'_v_mu_pt']])
         
-            h_long = plt.hist(ptt_long[entry+'_ptvv'].values, bins = 100, label=entry, density=normalize, histtype='step', linewidth=2)
+            h_long = plt.hist(ptt_long[entry+'_ptvv'].values, np.arange(b1,b2,b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
             plt.figure(2)
@@ -233,7 +231,7 @@ def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name
             ptt_trans[entry+'_ptvv'] = pd.DataFrame()
             ptt_trans[entry+'_ptvv'] = pd.concat([hdf_trans[name_el_tx[:-10]+'_v_el_pt'],hdf_trans[name_mu_tx[:-10]+'_v_mu_pt']])
          
-            h_trans = plt.hist(ptt_trans[entry+'_ptvv'].values, bins = 100, label=entry, density=normalize, histtype='step', linewidth=2)
+            h_trans = plt.hist(ptt_trans[entry+'_ptvv'].values, np.arange(b1,b2,b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
         else:
             print('wrong polarization')
@@ -255,7 +253,7 @@ if (config.get('plotting', 'truth') == '1'):
     
     elif config.get('selection','type') == 'regneutrinos':
         ptt_long['pt_vv_truth'] = pd.concat([hdf_long['v_mu_pt'],hdf_long['v_el_pt']])
-        h_long_true = plt.hist(ptt_long['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Longitudinal')
+        h_long_true = plt.hist(ptt_long['pt_vv_truth'],np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Longitudinal')
         #pt_inf = min(hdf_long['pt_vv'])
         #pt_max = min(hdf_long['pt_vv'])
 
@@ -269,7 +267,7 @@ if (config.get('plotting', 'truth') == '1'):
     
     elif config.get('selection','type') == 'regneutrinos':
         ptt_trans['pt_vv_truth'] = pd.concat([hdf_trans['v_mu_pt'],hdf_trans['v_el_pt']])
-        h_trans_true = plt.hist(ptt_trans['pt_vv_truth'],bins = 100, histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Truth Transverse')
+        h_trans_true = plt.hist(ptt_trans['pt_vv_truth'],np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Transverse')
         #print(ptt_trans['pt_vv_truth'][:15])
 
     else: print('wrong selection type')    
@@ -288,7 +286,7 @@ if config.get('selection','type') == 'regcostheta':
         print(i)
 
 elif config.get('selection','type') == 'regneutrinos':
-    xlabel = 'pt'+r'$_{\nu\nu}$'
+    xlabel = 'pt'+r'$_{\nu\nu}$ (GeV)'
     file_name = '/pt_vv'
     for i,j,k,l,p,q,r,s in zip(good_el_pxl,good_el_pyl,good_mu_pxl,good_mu_pyl,good_el_pxt,good_el_pyt,good_mu_pxt,good_mu_pyt):
         plot_neutrinospt(i,j,k,l,p,q,r,s,pol_list,where_save)
@@ -303,6 +301,9 @@ art_l = []
 lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1),ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_l.append(lgd_l)
 #plt.title('Longitudinal polarization, '+reco_type)
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
+plt.annotate(r'W$_{\mathbf{L}}$ polarization',xy=(-0.8, ymax),fontsize=14,weight='bold')
 plt.xlabel(xlabel)
 plt.ylabel('Number of events')
 
@@ -313,6 +314,9 @@ lgd_t = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legen
 art_t.append(lgd_t)
 #plt.title('Transverse polarization, '+reco_type)
 plt.xlabel(xlabel)
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
+plt.annotate(r'W$_{\mathbf{T}}$ polarization',xy=(-0.8, ymax),fontsize=14,weight='bold')
 plt.ylabel('Number of events')
 
 fig_long.savefig(where_save + file_name + '_long.pdf', additional_artists=art_l,bbox_inches="tight")

@@ -35,7 +35,7 @@ if os.path.exists(where_save+'/scatter_full.pdf') or \
    os.path.exists(where_save+'/scatter_unpol.pdf') or \
    os.path.exists(where_save+'/scatter_trans.pdf') or \
    os.path.exists(where_save+'/scatter_long.pdf'):
-    raise ValueError('plots in the '+where_save+'would be overwritten, exiting')
+    raise ValueError('plots in the '+where_save+' would be overwritten, exiting')
 if not os.path.exists(where_save):
     os.system('mkdir ' + where_save)
 
@@ -97,10 +97,9 @@ if config.get('selection','type') == 'binary':
 """"""
 def plot_scat(name,avlb_pol):
     
-    pattern = config.get('legend','entry').split(':')
-    entry = re.sub(pattern[0],pattern[1], name.rstrip())
-    
-    entry = re.sub('_e100', '', entry)
+    hid = name.split('bat')[0].split('hid')[1]
+    neu = name.split('bat')[0].split('hid')[0].split('neu')[1]
+    entry = '{0} neu {1} hid. layers.'.format(neu,hid)
 
 
 
@@ -221,14 +220,26 @@ print('plotting executed')
 #######longitudinal
 fig_long = plt.figure(1)
 #plt.title('Longitudinal ')
-plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
+art_l = []
+lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=2, fancybox=True, fontsize='small')
+art_l.append(lgd_l)
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
+plt.annotate(r'W$_{\mathbf{L}}$ polarization',xy=(-0.8, ymax),fontsize=14,weight='bold')
+
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reconstructed cos'+r'$\theta$')
 
 # #########transverse
 fig_trans = plt.figure(2)
+art_t = []
+lgd_t = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=2, fancybox=True, fontsize='small')
+art_t.append(lgd_t)
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
+plt.annotate(r'W$_{\mathbf{T}}$ polarization',xy=(-0.8, ymax),fontsize=14,weight='bold')
 #plt.title('Transverse')
-plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
+
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reconstructed cos'+r'$\theta$')
 
@@ -237,7 +248,10 @@ fig_unpol = plt.figure(3)
 art_u = []
 lgd_u = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=2, fancybox=True, fontsize='small')
 art_u.append(lgd_u)
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
 #plt.title('Unpolarized')
+plt.annotate(r'W unpolarized',xy=(-0.8, ymax),fontsize=14,weight='bold')
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reconstructed cos'+r'$\theta$')
 
@@ -250,8 +264,8 @@ art_f.append(lgd_f)
 plt.xlabel('truth cos'+r'$\theta$')
 plt.ylabel('reconstructed cos'+r'$\theta$')
 
-fig_long.savefig(where_save + '/scatter_long.pdf')
-fig_trans.savefig(where_save + '/scatter_trans.pdf')
+fig_long.savefig(where_save + '/scatter_long.pdf',additional_artists=art_l,bbox_inches="tight")
+fig_trans.savefig(where_save + '/scatter_trans.pdf',additional_artists=art_t,bbox_inches="tight")
 fig_unpol.savefig(where_save + '/scatter_unpol.pdf',additional_artists=art_u,bbox_inches="tight")
 fig_full.savefig(where_save + '/scatter_full.pdf',additional_artists=art_f,bbox_inches="tight")
 

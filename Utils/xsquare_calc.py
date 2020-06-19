@@ -54,12 +54,17 @@ for f in config.get('input','data').split(','):
       print('BINARY')
       s_l = hdf_f[['sol0_cos_theta','sol1_cos_theta']].values
       
-      for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_rounded_score'):
-      #for i in fnmatch.filter(hdf_f.columns, config.get('input','model_sel') + '*'):
+      #for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_rounded_score'):
+      
+      for i in fnmatch.filter(hdf_f.columns, config.get('input','model_sel') + '*'):
       #selection criterion
         print(i)
+        score_rnd = np.random.randint(0,2,[s_l.shape[0],])
         score_l = hdf_f[i]
+
         cos_l = [s_l[i, sign] for i, sign in enumerate(score_l)]
+        cos_rnd = [s_l[i, sign] for i, sign in enumerate(score_rnd)]
+        rmse_rnd = mean_squared_error(hdf_f[truth],cos_rnd, squared=False)
         chi_statistic, p_value = chisquare(cos_l, hdf_f[truth])
         rmse = mean_squared_error(hdf_f[truth],cos_l, squared=False)
         outfile.write("model: ")
@@ -67,6 +72,7 @@ for f in config.get('input','data').split(','):
         outfile.write("\n")
         #outfile.write("Xsquare = {:.3f} \n".format(round(chi_statistic, 3)))
         outfile.write("rmse = {:.3f}\n".format(round(rmse, 3)))
+        outfile.write("rmse random = {:.3f}\n".format(round(rmse_rnd, 3)))
         list_rmse[str(i)] = round(rmse, 3)
 
     elif config.get('selection','type') == 'semi_regression':

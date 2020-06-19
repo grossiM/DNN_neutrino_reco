@@ -127,9 +127,9 @@ class GridEvaluation():
 
         pred = model.predict(data_scaled)
         
-        #label_sc_name = path + '/label_scaler.pkl'
+        label_sc_name = path + '/label_scaler.pkl'
         #correction to use correct label scaler
-        label_sc_name = path + '/../label_scaler.pkl'
+        #label_sc_name = path + '/../label_scaler.pkl'
 
         if os.path.exists(label_sc_name):
             #label_scaler = joblib.load(label_sc_name)

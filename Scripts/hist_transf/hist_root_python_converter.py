@@ -79,7 +79,11 @@ for l in hist_list:
 
 ####in step 1 you plot inserting the list
     if step == 1: 
-        value = input("Please enter indices of hist to plot:\n").split(',')
+        print(config.get('plotting','indices'))
+        if config.get('plotting','indices') == '':
+            value = input("Please enter indices of hist to plot:\n").split(',')
+        else:
+            value = config.get('plotting','indices').split(',')
         for index, m in enumerate(value):
                 #implement a better check on the class like: isinstance(b,type(a)) where b is the file[hist] and type(a) is class 'uproot.rootio.TH1F', now we compare a string
                 h1 = a[a.keys()[int(m)]]
@@ -102,7 +106,10 @@ for l in hist_list:
                 #counts_, bins_, _ = plt.hist(centroids, bins=len(counts),weights=counts, range=(min(bins), max(bins)))
                 #assert np.allclose(bins_, bins)
                 #assert np.allclose(counts_, counts)
-                entry = input("Please enter legend entry for hist "+m+":")
+                if config.get('plotting','entries') == '':
+                    entry = input("Please enter legend entry for hist "+m+":")
+                else:
+                    entry = config.get('plotting','entries').split(',')[index]
                 
                 plt.figure(1)
                 plt.legend()
@@ -119,6 +126,12 @@ for l in hist_list:
             art = []
             lgd = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.15),ncol= int(config.get('legend','ncol')), fancybox=True, fontsize= int(config.get('legend','fontsize')))
             art.append(lgd)
+            if config.get('plotting','label') != '':
+                raw_string = eval('"' + config.get('plotting','label') + '"')
+                xmin, xmax = plt.xlim()
+                ymin, ymax = plt.ylim()
+                plt.ylim((ymin,1.1*ymax))
+                plt.annotate(raw_string,xy=(xmin+0.1*(xmax-xmin), ymax),fontsize=14,weight='bold')
             plt.xlabel(config.get('plotting','xlabel'))
             plt.ylabel(config.get('plotting','ylabel'))
             plt.savefig(base_name + '/' + config.get('plotting','name-pdf')+ '.pdf', additional_artists=art,bbox_inches="tight")

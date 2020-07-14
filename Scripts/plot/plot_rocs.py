@@ -5,7 +5,7 @@
   Jakob Novak <janob.novak.cern.ch>
   Version 1.0, February 2020
 
-  USAGE: python3  plot_evaluated.py -c NNplot_config.cfg
+  USAGE: 
   """
 
 import os

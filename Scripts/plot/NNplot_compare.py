@@ -162,9 +162,12 @@ if config.get('selection','type') == 'binary':
 """"""
 def plot_bin(name, avlb_pol, where):
 
-    name_10M = name[:8] + name[14:]
-    name_short = name[:-14] + '_e100'
-    name_short_10M = name[:9] + '_e100'
+    # name_10M = name[:8] + name[14:]
+    # name_short = name[:-14] + '_e100'
+    # name_short_10M = name[:9] + '_e100'
+    hid = name.split('bat')[0].split('hid')[1]
+    neu = name.split('bat')[0].split('hid')[0].split('neu')[1]
+    entry = '{0} neu {1} hid. layers.'.format(neu,hid)
 
     for pol_type in avlb_pol:
 
@@ -305,12 +308,18 @@ def plot_bin(name, avlb_pol, where):
 """"""
 def plot_reg(name,avlb_pol, where):
 
-    pattern = config.get('legend','entry').split(':')
-    entry = re.sub(pattern[0],pattern[1], name.rstrip())
-    entry = entry.replace('_e100', '')
+    # pattern = config.get('legend','entry').split(':')
+    # entry = re.sub(pattern[0],pattern[1], name.rstrip())
+    # entry = entry.replace('_e100', '')
     name_10M = name[:9] + name[15:]
     print('10 M:')
     print(name_10M)
+    hid = name.split('bat')[0].split('hid')[1]
+    
+    neu = name.split('bat')[0].split('hid')[0].split('neu')[1]
+    print(neu)
+    print(hid)
+    entry = '{0} neu {1} hid. layers '.format(neu,hid)
 
     for pol_type in avlb_pol:
 
@@ -322,33 +331,34 @@ def plot_reg(name,avlb_pol, where):
         if pol_type == 'long':
             plt.figure(1)
             plt.legend()
-            h_long = plt.hist(hdf_long_10k[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_10k', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(hdf_long_100k[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_100k', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(hdf_long_1M[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_1M', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(hdf_long_10M[name_10M].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_10M', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long_10k[name].values, np.arange(b1, b2, b3), label=entry +'10k', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long_100k[name].values, np.arange(b1, b2, b3), label=entry+'100k', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long_1M[name].values, np.arange(b1, b2, b3), label=entry+'1M', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long_10M[name_10M].values, np.arange(b1, b2, b3), label=entry+'10M', density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
+            print(hdf_trans_10k[name][:10])
             plt.figure(2)
             plt.legend()
-            h_trans = plt.hist(hdf_trans_10k[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_10k', density=True, histtype='step', linewidth=2)
-            h_trans = plt.hist(hdf_trans_100k[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_100k', density=True, histtype='step', linewidth=2)
-            h_trans = plt.hist(hdf_trans_1M[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_1M', density=True, histtype='step', linewidth=2)
-            h_trans = plt.hist(hdf_trans_10M[name_10M].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_10M', density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans_10k[name].values, np.arange(b1, b2, b3), label=entry +'10k', density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans_100k[name].values, np.arange(b1, b2, b3), label=entry +'100k', density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans_1M[name].values, np.arange(b1, b2, b3), label = entry +'1M', density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans_10M[name_10M].values, np.arange(b1, b2, b3), label=entry +'10M', density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'unpol':
             plt.figure(3)
             plt.legend()
-            h_unpol = plt.hist(hdf_unpol_10k[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_10k', density=True, histtype='step', linewidth=2)
-            h_unpol = plt.hist(hdf_unpol_100k[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_100k', density=True, histtype='step', linewidth=2)
-            h_unpol = plt.hist(hdf_unpol_1M[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_1M', density=True, histtype='step', linewidth=2)
-            h_unpol = plt.hist(hdf_unpol_10M[name_10M].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0]+'10M', density=True, histtype='step', linewidth=1)
+            h_unpol = plt.hist(hdf_unpol_10k[name].values, np.arange(b1, b2, b3), label=entry +'10k', density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol_100k[name].values, np.arange(b1, b2, b3), label=entry +'100k', density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol_1M[name].values, np.arange(b1, b2, b3), label = entry +'1M', density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol_10M[name_10M].values, np.arange(b1, b2, b3), label=entry +'10M', density=True, histtype='step', linewidth=1)
 
         elif pol_type == 'fullcomp':
             plt.figure(4)
-            h_full = plt.hist(hdf_full_comp_10k[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_10k', density=True, histtype='step', linewidth=2)
-            h_full = plt.hist(hdf_full_comp_100k[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_100k', density=True, histtype='step', linewidth=2)
-            h_full = plt.hist(hdf_full_comp_1M[name].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_1M', density=True, histtype='step', linewidth=2)
-            h_full = plt.hist(hdf_full_comp_10M[name_10M].values, np.arange(b1, b2, b3),alpha=0.3, label=name.split('_')[0].replace('bat32', '')+'_10M', density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp_10k[name].values, np.arange(b1, b2, b3),label=entry+'10k', density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp_100k[name].values, np.arange(b1, b2, b3), label=entry+'100k', density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp_1M[name].values, np.arange(b1, b2, b3), label=entry+'1M', density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp_10M[name_10M].values, np.arange(b1, b2, b3), label=entry+'10M', density=True, histtype='step', linewidth=2)
 
 
         else:
@@ -412,6 +422,9 @@ art_l.append(lgd_l)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
+plt.annotate(r'W$_{\mathbf{L}}$ polarization',xy=(-0.8, ymax),fontsize=14,weight='bold')
 
 plt.figure(2)
 art_t = []
@@ -420,6 +433,9 @@ art_t.append(lgd_t)
 #plt.title('Transverse polarization, '+reco_type)
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
+plt.annotate(r'W$_{\mathbf{T}}$ polarization',xy=(-0.8, ymax),fontsize=14,weight='bold')
 plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(3)
@@ -427,6 +443,9 @@ art_u = []
 lgd_u = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_u.append(lgd_u)
 #plt.title('Unpolarized OSP, '+reco_type)
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
+plt.annotate(r'W unpolarized',xy=(-0.8, ymax),fontsize=14,weight='bold')
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 plt.ylim((0, 1.2*plt.ylim()[1]))
@@ -436,6 +455,9 @@ art_f = []
 lgd_f = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_f.append(lgd_f)
 #plt.title('Full computation, '+reco_type)
+ymin, ymax = plt.ylim()
+plt.ylim((ymin,1.1*ymax))
+plt.annotate(r'W full computation',xy=(-0.8, ymax),fontsize=14,weight='bold')
 plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 # plt.ylim((0, 1.2*plt.ylim()[1]))

@@ -127,22 +127,24 @@ class GridEvaluation():
 
         pred = model.predict(data_scaled)
         
+
         label_sc_name = path + '/label_scaler.pkl'
         #correction to use correct label scaler
         #label_sc_name = path + '/../label_scaler.pkl'
 
-        if os.path.exists(label_sc_name):
-            #label_scaler = joblib.load(label_sc_name)
-            label_scaler = load(label_sc_name)
-            orig_pred = pred[:10]
-            pred = label_scaler.inverse_transform(pred)
-            if (orig_pred == pred[:10]).all():
-                print('Error in label_scaler for model {0}'.format(model_dir))
+        if self.config.get('training','scale-label')== '1':
+            if os.path.exists(label_sc_name):
+                #label_scaler = joblib.load(label_sc_name)
+                label_scaler = load(label_sc_name)
+                orig_pred = pred[:10]
+                pred = label_scaler.inverse_transform(pred)
+                if (orig_pred == pred[:10]).all():
+                    print('Error in label_scaler for model {0}'.format(model_dir))
+                    sys.exit()
+                else: print('Label_scaler OK')
+            else: 
+                print('scaler not found, exiting')
                 sys.exit()
-            else: print('Label_scaler OK')
-        else: 
-            print('scaler not found, exiting')
-            sys.exit()
 
         if int(self.config.get('output','save-steps'))==1: # check this!
             epoch = model_ep[19:]
@@ -171,9 +173,18 @@ class GridEvaluation():
             plt.plot(fp, tp, label=model_label)
 
             selection = self.roundScore(pred, thr)
+            print('selection_shape: {}'.format(selection.shape))
+            print('truth_eval[sample] shape: {}'.format(self.truth_eval[sample].shape))
+
             self.pd_eval[sample][model_dir+'_rounded_score'] = selection
 
             nall = selection.shape[0]
             comparison = np.ones((nall,1), dtype=bool)
-            np.equal(np.expand_dims(self.truth_eval[sample],1),selection,comparison)
+            #check truth_eval[sample] dimension due to possible different python version
+            if self.truth_eval[sample].ndim == 1:
+                np.equal(np.expand_dims(self.truth_eval[sample],1),selection,comparison)
+            elif self.truth_eval[sample].ndim == 2:
+                np.equal(self.truth_eval[sample],selection,comparison)
+            else:
+                np.equal(self.truth_eval[sample],selection,comparison)
             print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))

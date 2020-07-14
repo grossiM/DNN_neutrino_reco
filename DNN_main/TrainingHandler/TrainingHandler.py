@@ -102,7 +102,6 @@ class TrainingHandler():
         #scaler implementation
         scaler = StandardScaler()
         scaler.fit(self.data_train)
-
         self.data_train_scaled = scaler.transform(self.data_train)
         self.data_val_scaled = scaler.transform(self.data_val)
 
@@ -127,6 +126,7 @@ class TrainingHandler():
             #joblib.dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
             dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
 
+
         model = Model.build(self.properties)
 
         if self.properties['save-steps']:
@@ -137,11 +137,21 @@ class TrainingHandler():
         else:
             auto_save = ModelCheckpoint(self.properties['output-folder'] + "/current_model", monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=2)
 
-        history = model.fit(self.data_train_scaled, self.labels_train_scaled,
-                        validation_data = (self.data_val_scaled, self.labels_val_scaled),
-                        epochs=self.properties['epochs'],
-                        batch_size=self.properties['batch-size'], shuffle=True,
-                        callbacks=[auto_save])
-                        #early stop to be implemented
-        plot_history([('DNN model', history),],self.properties['output-folder'],self.properties['metrics'])
+
+        if self.properties['scale-label'] == '1':
+            history = model.fit(self.data_train_scaled, self.labels_train_scaled,
+                            validation_data = (self.data_val_scaled, self.labels_val_scaled),
+                            epochs=self.properties['epochs'],
+                            batch_size=self.properties['batch-size'], shuffle=True,
+                            callbacks=[auto_save])
+
+        elif self.properties['scale-label'] == '0':
+            print('labels not scaled')
+            history = model.fit(self.data_train_scaled, self.labels_train,
+                            validation_data = (self.data_val_scaled, self.labels_val),
+                            epochs=self.properties['epochs'],
+                            batch_size=self.properties['batch-size'], shuffle=True,
+                            callbacks=[auto_save])
+                            #early stop to be implemented
+            plot_history([('DNN model', history),],self.properties['output-folder'],self.properties['metrics'])
         

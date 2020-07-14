@@ -133,11 +133,3 @@ for i in range(len(indeces)-1):
     
    
     print(name)
-    
-#name_pickle = args.output_folder + '/' + args.name + '.pkl'
-
-###save pickle files of data_handler
-#pickle.dump(data_handler, open(name_pickle,'wb'), pickle.HIGHEST_PROTOCOL)
-
-
-

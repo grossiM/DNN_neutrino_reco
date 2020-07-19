@@ -113,10 +113,15 @@ for l in hist_list:
                 
                 plt.figure(1)
                 plt.legend()
+                first_color = config.get('plotting','first-color')
                 if index == 0:
-                    h1p = plt.hist(centroids, bins=len(counts), weights=counts, range=(min(bins), max(bins)), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=False, linewidth=2, label=entry)
+                    color = 'C' + first_color
+                    h1p = plt.hist(centroids, bins=len(counts), weights=counts, range=(min(bins), max(bins)), histtype='stepfilled', facecolor='w', hatch='//', edgecolor=color, density=False, linewidth=2, label=entry)
                 else:
-                    h1p = plt.hist(centroids, bins=len(counts),weights=counts, range=(min(bins), max(bins)),label=entry, density=False, histtype='step', linewidth=2)
+                    color = 'C' + str(index)
+                    if (index < int(first_color) + 1):
+                        color = 'C' + str(index-1)
+                    h1p = plt.hist(centroids, bins=len(counts),weights=counts, range=(min(bins), max(bins)),label=entry, density=False, histtype='step', linewidth=2, edgecolor=color)
                 if save_npz:
                     np.savez(base_name + '/hNEW_' + title + '_' + new_label, h1p= h1p)
                     print('Saving histo ' + title + '_' +  new_label +  ' '+  'in: ' + base_name)

@@ -3,7 +3,8 @@
   Michele Grossi <michele.grossi@it.ibm.com>
   Jakob Novak <janob.novak.cern.ch>
   Version 1.0, June 2020
-  USAGE: python3  plot_ful_lep.py -c JobOption/***_config.cfg
+  USAGE: python3  plot_reg6var.py -c JobOption/***_config.cfg
+  macro to plot costheta from 6 variables reconstruction
   """
 #non faccio stacked ma appendo i dataset
 

@@ -235,7 +235,7 @@ def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name
 
         else:
             print('wrong polarization')
-    np.savez(where + '/h_' + entry, trans=h_trans, long=h_long)
+    np.savez(where + '/h_' + name_el_lx, trans=h_trans, long=h_long)
 """"""
 
 if (config.get('plotting', 'normalize') == '1'):
@@ -253,7 +253,7 @@ if (config.get('plotting', 'truth') == '1'):
     
     elif config.get('selection','type') == 'regneutrinos':
         ptt_long['pt_vv_truth'] = pd.concat([hdf_long['v_mu_pt'],hdf_long['v_el_pt']])
-        h_long_true = plt.hist(ptt_long['pt_vv_truth'],np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Longitudinal')
+        h_long_true = plt.hist(ptt_long['pt_vv_truth'],np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
         #pt_inf = min(hdf_long['pt_vv'])
         #pt_max = min(hdf_long['pt_vv'])
 
@@ -267,7 +267,7 @@ if (config.get('plotting', 'truth') == '1'):
     
     elif config.get('selection','type') == 'regneutrinos':
         ptt_trans['pt_vv_truth'] = pd.concat([hdf_trans['v_mu_pt'],hdf_trans['v_el_pt']])
-        h_trans_true = plt.hist(ptt_trans['pt_vv_truth'],np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='Transverse')
+        h_trans_true = plt.hist(ptt_trans['pt_vv_truth'],np.arange(b1,b2,b3), histtype='stepfilled', facecolor='w', hatch='//', edgecolor='C0', density=normalize, linewidth=2, label='truth')
         #print(ptt_trans['pt_vv_truth'][:15])
 
     else: print('wrong selection type')    
@@ -286,7 +286,7 @@ if config.get('selection','type') == 'regcostheta':
         print(i)
 
 elif config.get('selection','type') == 'regneutrinos':
-    xlabel = 'pt'+r'$_{\nu\nu}$ (GeV)'
+    xlabel = r'$p_{T\nu \nu}$ [GeV]'
     file_name = '/pt_vv'
     for i,j,k,l,p,q,r,s in zip(good_el_pxl,good_el_pyl,good_mu_pxl,good_mu_pyl,good_el_pxt,good_el_pyt,good_mu_pxt,good_mu_pyt):
         plot_neutrinospt(i,j,k,l,p,q,r,s,pol_list,where_save)

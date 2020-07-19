@@ -173,8 +173,8 @@ class GridEvaluation():
             plt.plot(fp, tp, label=model_label)
 
             selection = self.roundScore(pred, thr)
-            print('selection_shape: {}'.format(selection.shape))
-            print('truth_eval[sample] shape: {}'.format(self.truth_eval[sample].shape))
+            # print('selection_shape: {}'.format(selection.shape))
+            # print('truth_eval[sample] shape: {}'.format(self.truth_eval[sample].shape))
 
             self.pd_eval[sample][model_dir+'_rounded_score'] = selection
 

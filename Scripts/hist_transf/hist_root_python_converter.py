@@ -84,6 +84,7 @@ for l in hist_list:
             value = input("Please enter indices of hist to plot:\n").split(',')
         else:
             value = config.get('plotting','indices').split(',')
+            
         for index, m in enumerate(value):
                 #implement a better check on the class like: isinstance(b,type(a)) where b is the file[hist] and type(a) is class 'uproot.rootio.TH1F', now we compare a string
                 h1 = a[a.keys()[int(m)]]
@@ -139,6 +140,6 @@ for l in hist_list:
                 plt.annotate(raw_string,xy=(xmin+0.1*(xmax-xmin), ymax),fontsize=14,weight='bold')
             plt.xlabel(config.get('plotting','xlabel'))
             plt.ylabel(config.get('plotting','ylabel'))
-            plt.savefig(base_name + '/' + config.get('plotting','name-pdf')+ '.pdf', additional_artists=art,bbox_inches="tight")
-            plt.savefig(base_name + '/' + config.get('plotting','name-pdf')+ '.eps', additional_artists=art,bbox_inches="tight", format='eps')
-            print('Saving plot ' + base_name + '/' + config.get('plotting','name-pdf')+ '.pdf')
+            plt.savefig(where_save + '/' + config.get('plotting','name-pdf')+ '.pdf', additional_artists=art,bbox_inches="tight")
+            plt.savefig(where_save + '/' + config.get('plotting','name-pdf')+ '.eps', additional_artists=art,bbox_inches="tight", format='eps')
+            print('Saving plot ' + where_save + '/' + config.get('plotting','name-pdf')+ '.pdf')

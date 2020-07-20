@@ -162,9 +162,9 @@ if config.get('selection','type') == 'binary':
 """"""
 def plot_bin(name, avlb_pol, where):
 
-    # name_10M = name[:8] + name[14:]
-    # name_short = name[:-14] + '_e100'
-    # name_short_10M = name[:9] + '_e100'
+    name_10M = name[:8] + name[14:]
+    name_short = name[:-14] + '_e100'
+    name_short_10M = name[:9] + '_e100'
     hid = name.split('bat')[0].split('hid')[1]
     neu = name.split('bat')[0].split('hid')[0].split('neu')[1]
     entry = '{0} neu {1} hid. layers.'.format(neu,hid)
@@ -467,7 +467,7 @@ art_l = []
 lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_l.append(lgd_l)
 # plt.title('Longitudinal polarization - ROC curves')
-plt.xlabel('fakes')
+plt.xlabel('Contamination')
 plt.ylabel('Number of events')
 # plt.ylim((0, 1.2*plt.ylim()[1]))
 
@@ -476,8 +476,8 @@ art_t = []
 lgd_t = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_t.append(lgd_t)
 # plt.title('Transverse polarization - ROC curves')
-plt.xlabel('fakes')
-plt.ylabel('efficiency')
+plt.xlabel('Contamination')
+plt.ylabel('Efficiency')
 # plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(7)
@@ -485,8 +485,8 @@ art_u = []
 lgd_u = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_u.append(lgd_u)
 # plt.title('Unpolarized OSP - ROC curves')
-plt.xlabel('fakes')
-plt.ylabel('efficiency')
+plt.xlabel('Contamination')
+plt.ylabel('Efficiency')
 # plt.ylim((0, 1.2*plt.ylim()[1]))
 
 plt.figure(8)
@@ -494,8 +494,8 @@ art_f = []
 lgd_f = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_f.append(lgd_f)
 # plt.title('Full computation - ROC curves')
-plt.xlabel('fakes')
-plt.ylabel('efficiency')
+plt.xlabel('Contamination')
+plt.ylabel('Efficiency')
 # plt.ylim((0, 1.2*plt.ylim()[1]))
 
 fig_long.savefig(where_save + '/theta_long.pdf', additional_artists=art_l,bbox_inches="tight")
@@ -504,42 +504,42 @@ fig_unpol.savefig(where_save + '/theta_unpol.pdf', additional_artists=art_u,bbox
 fig_full.savefig(where_save + '/theta_full.pdf', additional_artists=art_f,bbox_inches="tight")
 
 if config.get('selection','type') == 'binary':
-    plot_bin(c,pol_list,where_save)
+    # plot_bin(c,pol_list,where_save)
 
     plt.figure(5)
     art_l = []
-    lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+    lgd_l = plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
     art_l.append(lgd_l)
     #plt.title('Longitudinal polarization - ROC curves')
-    plt.xlabel('fakes')
+    plt.xlabel('Contamination')
     plt.ylabel('Number of events')
     # plt.ylim((0, 1.2*plt.ylim()[1]))
 
     plt.figure(6)
     art_t = []
-    lgd_t = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+    lgd_t = plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
     art_t.append(lgd_t)
     #plt.title('Transverse polarization - ROC curves')
-    plt.xlabel('fakes')
-    plt.ylabel('efficiency')
+    plt.xlabel('Contamination')
+    plt.ylabel('Efficiency')
     # plt.ylim((0, 1.2*plt.ylim()[1]))
 
     plt.figure(7)
     art_u = []
-    lgd_u = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+    lgd_u = plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
     art_u.append(lgd_u)
     #plt.title('Unpolarized OSP - ROC curves')
-    plt.xlabel('fakes')
-    plt.ylabel('efficiency')
+    plt.xlabel('Contamination')
+    plt.ylabel('Efficiency')
     # plt.ylim((0, 1.2*plt.ylim()[1]))
 
     plt.figure(8)
     art_f = []
-    lgd_f = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
+    lgd_f = plt.legend(loc='upper left', ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
     art_f.append(lgd_f)
     #plt.title('Full computation - ROC curves')
-    plt.xlabel('fakes')
-    plt.ylabel('efficiency')
+    plt.xlabel('Contamination')
+    plt.ylabel('Efficiency')
     # plt.ylim((0, 1.2*plt.ylim()[1]))
 
 

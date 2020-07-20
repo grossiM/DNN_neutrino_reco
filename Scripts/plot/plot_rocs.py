@@ -225,8 +225,8 @@ for figNumber, c in enumerate(good):
     title = re.sub(pattern[0],pattern[1], c.rstrip())
     # plt.title(title)
     plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
-    plt.xlabel('fakes')
-    plt.ylabel('efficiency')
+    plt.xlabel('Contamination')
+    plt.ylabel('Efficiency')
     fig_model.savefig(where_save+'/roc_'+c+'.pdf')
 
 print('\n\n\n\n')
@@ -237,29 +237,29 @@ print('plotting executed')
 fig_long = plt.figure(1)
 # plt.title('Longitudinal polarization - ROC curves')
 plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
-plt.xlabel('fakes')
-plt.ylabel('efficiency')
+plt.xlabel('Contamination')
+plt.ylabel('Efficiency')
 
 # #########transverse
 fig_trans = plt.figure(2)
 # plt.title('Transverse polarization - ROC curves')
 plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
-plt.xlabel('fakes')
-plt.ylabel('efficiency')
+plt.xlabel('Contamination')
+plt.ylabel('Efficiency')
 
 # #######unpolarized
 fig_unpol = plt.figure(3)
 # plt.title('Unpolarized OSP - ROC curves')
 plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
-plt.xlabel('fakes')
-plt.ylabel('efficiency')
+plt.xlabel('Contamination')
+plt.ylabel('Efficiency')
 
 # ######full computation
 fig_full = plt.figure(4)
 # plt.title('Full computation - ROC curves')
 plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize=int(config.get('legend','fontsize')))
-plt.xlabel('fakes')
-plt.ylabel('efficiency')
+plt.xlabel('Contamination')
+plt.ylabel('Efficiency')
 
 fig_long.savefig(where_save + '/roc_long.pdf')
 fig_trans.savefig(where_save + '/roc_trans.pdf')

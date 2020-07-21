@@ -27,6 +27,11 @@ import optimizeThr as ot
 import handler_kinematics as kinematics
 import tables
 
+neuscan = False
+hidscan = False
+batscan = False
+finalconfig = True
+
 class GridEvaluation():
 
 	def __init__(self, config_file, selection=''):
@@ -80,13 +85,16 @@ class GridEvaluation():
 
 		if self.config.get('evaluation','type') in ['binary', 'categorization']:
 			plt.figure(1)
-			plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
+			#plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
+			plt.legend(loc='lower right', ncol=1, fancybox=True, fontsize=12, frameon=False)
 			plt.ylabel('efficiency')
 			plt.xlabel('1 - purity')
+			plt.xlim(0.0, 1.0)
+			plt.ylim(0.0, 1.0)
 			plt.title('ROC curves')
 			self.fig_roc.savefig(self.config.get('evaluation', 'output') + '/roc_curves.pdf')
 			plt.figure(1)
-			plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+			plt.legend(loc='upper left', ncol=1, fancybox=True, fontsize=12, frameon=False)
 			plt.ylabel('efficiency')
 			plt.xlabel('1 - purity')
 			plt.xlim(0.15, 0.6)
@@ -108,20 +116,32 @@ class GridEvaluation():
 			plt.title('Macro average ROC curves')
 			self.fig_roc_macroav.savefig(self.config.get('evaluation', 'output') + '/roc_curves_macroav.pdf')
 			plt.figure(2)
-			plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+			plt.legend(loc='upper left', ncol=1, fancybox=True, fontsize=12, frameon=False)
 			plt.ylabel('efficiency')
 			plt.xlabel('1 - purity')
 			plt.xlim(0.15, 0.4)
 			plt.ylim(0.6, 0.85)
-			plt.title('Micro average ROC curves')
+			#plt.title('Micro average ROC curves')
+			if neuscan == True:
+				plt.title('ROC curves - neurons')
+			if hidscan == True:
+				plt.title('ROC curves - hidden layers')
+			if batscan == True:
+				plt.title('ROC curves - batch size')
 			self.fig_roc_microav.savefig(self.config.get('evaluation', 'output') + '/roc_curves_microav_zoom.pdf')
 			plt.figure(3)
-			plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
+			plt.legend(loc='upper left', ncol=1, fancybox=True, fontsize=12, frameon=False)
 			plt.ylabel('efficiency')
 			plt.xlabel('1 - purity')
 			plt.xlim(0.15, 0.4)
 			plt.ylim(0.6, 0.85)
-			plt.title('Macro average ROC curves')
+			#plt.title('Macro average ROC curves')
+			if neuscan == True:
+				plt.title('ROC curves - neurons')
+			if hidscan == True:
+				plt.title('ROC curves - hidden layers')
+			if batscan == True:
+				plt.title('ROC curves - batch size')
 			self.fig_roc_macroav.savefig(self.config.get('evaluation', 'output') + '/roc_curves_macroav_zoom.pdf')
 
 
@@ -226,13 +246,25 @@ class GridEvaluation():
 			thr = dict()
 			roc_auc = dict()
 			pol = {0 : "LL", 1 : "LT", 2 : "TT"}
+			if neuscan == True:
+				label = "neurons = " + model_label.split('hid')[0].split('neu')[-1]
+			if hidscan == True:
+				label = "layers = " + model_label.split('hid')[1].split('bat')[0]
+			if batscan == True:
+				label = "batch size = " + model_label.split('bat')[-1].split('_')[0]
+			if finalconfig == True:
+				label = model_label
 			for cat in range(n_classes):
 				roc_auc[cat] = roc_auc_score(self.truth_eval[sample][:,cat], pred[:,cat])
 				print(">>> AUC (class " + str(cat) + "): ",roc_auc[cat])
 				fp[cat], tp[cat], th[cat] = roc_curve(self.truth_eval[sample][:,cat], pred[:,cat])
 				thr[cat], var1, var2 = ot.optimizeThr(fp[cat],tp[cat],th[cat])
 				#plt.plot(fp[cat], tp[cat], label=model_label + " (class " + str(cat) + ")")
-				plt.plot(fp[cat], tp[cat], label=model_label + " (class " + pol[cat] + ")")
+				#plt.plot(fp[cat], tp[cat], label=model_label + " (class " + pol[cat] + ")")
+				if finalconfig == True:
+					plt.plot(fp[cat], tp[cat], label="class " + pol[cat])
+				else:
+					plt.plot(fp[cat], tp[cat], label=label)
 
 				selection = self.roundScore(pred[:,cat], thr[cat])
 				self.pd_eval[sample][model_dir+'_cat'+str(cat)+'_rounded_score'] = selection
@@ -256,6 +288,8 @@ class GridEvaluation():
 			roc_auc["macro"] = auc(fp["macro"], tp["macro"])
 
 			plt.figure(2)
-			plt.plot(fp["micro"], tp["micro"], label=model_label)
+			#plt.plot(fp["micro"], tp["micro"], label=model_label)
+			plt.plot(fp["micro"], tp["micro"], label=label)
 			plt.figure(3)
-			plt.plot(fp["macro"], tp["macro"], label=model_label)
+			#plt.plot(fp["macro"], tp["macro"], label=model_label)
+			plt.plot(fp["macro"], tp["macro"], label=label)

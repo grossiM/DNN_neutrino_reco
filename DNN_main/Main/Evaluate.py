@@ -7,9 +7,11 @@ import sys
 import os
 import configparser
 
-repo= os.environ['NEW_REPO']
-sys.path.append(repo + '/DNN_neutrino_reco/DNN_main/Evaluation')
+#repo= os.environ['NEW_REPO']
+home = os.path.expanduser('~')
+#sys.path.append(repo + '/DNN_neutrino_reco/DNN_main/Evaluation')
 #sys.path.append(repo + 'neutrinoreconstruction/DeepLearning/backward_compatibility')
+sys.path.append(home + '/DNN_neutrino_reco/DNN_main/Evaluation')
 
 import GridEvaluation as ge 
 

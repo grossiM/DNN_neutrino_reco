@@ -19,6 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
+from shutil import copyfile
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--config', type=str, required=True)
@@ -92,10 +93,10 @@ b1,b2,b3 = float(bins[0]), float(bins[1]), float(bins[2])
 
 good = []
 for wildcard in config.get('selection','wildcard').split(','):
-    if config.get('selection','type') == 'binary': # These two lines need to be commented out
-        wildcard += '_rounded_score'               # to train on autoai output or SELECTION CRITERIA
-    elif config.get('selection','type') == 'regression':
-        wildcard += '_pred'
+    # if config.get('selection','type') == 'binary': # These two lines need to be commented out
+    #     wildcard += '_rounded_score'               # to train on autoai output or SELECTION CRITERIA
+    # elif config.get('selection','type') == 'regression':
+    #     wildcard += '_pred'
     good = good + fnmatch.filter(hdf_long.columns,wildcard)
 
 if config.get('selection','type') == 'binary':
@@ -151,6 +152,7 @@ def plot_bin(name, avlb_pol, where, random=False):
                 cos_t = [s_t[i, int(not bool(sign))] for i, sign in enumerate(score_t)]
             else:
                 cos_t = [s_t[i, sign] for i, sign in enumerate(score_t)]
+                cos_tn = [ -i for i in cos_t ] 
             plt.figure(2)
             h_trans = plt.hist(cos_t, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
 
@@ -280,7 +282,8 @@ art_l = []
 lgd_l = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1),ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_l.append(lgd_l)
 #plt.title('Longitudinal polarization, '+reco_type)
-plt.xlabel('cos'+r'$\theta$')
+plt.xlabel(config.get('plotting','xlabel'))
+#plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 ymin, ymax = plt.ylim()
 plt.ylim((ymin,1.1*ymax))
@@ -293,7 +296,8 @@ art_t = []
 lgd_t = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_t.append(lgd_t)
 #plt.title('Transverse polarization, '+reco_type)
-plt.xlabel('cos'+r'$\theta$')
+plt.xlabel(config.get('plotting','xlabel'))
+#plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 ymin, ymax = plt.ylim()
 plt.ylim((ymin,1.1*ymax))
@@ -306,7 +310,8 @@ art_u = []
 lgd_u = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_u.append(lgd_u)
 #plt.title('Unpolarized OSP, '+reco_type)
-plt.xlabel('cos'+r'$\theta$')
+plt.xlabel(config.get('plotting','xlabel'))
+#plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 #plt.ylim((0, 1.2*plt.ylim()[1]))
 # plt.ylim((0, 1.2))
@@ -316,7 +321,8 @@ art_f = []
 lgd_f = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(config.get('legend','ncol')), fancybox=True, fontsize=int(config.get('legend','fontsize')))
 art_f.append(lgd_f)
 #plt.title('Full computation, '+reco_type)
-plt.xlabel('cos'+r'$\theta$')
+plt.xlabel(config.get('plotting','xlabel'))
+#plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
 #plt.ylim((0, 1.2*plt.ylim()[1]))
 # plt.ylim((0, 1.2))
@@ -326,4 +332,5 @@ fig_trans.savefig(where_save + '/theta_trans.pdf', additional_artists=art_t,bbox
 fig_unpol.savefig(where_save + '/theta_unpol.pdf', additional_artists=art_u,bbox_inches="tight")
 fig_full.savefig(where_save + '/theta_full.pdf', additional_artists=art_f,bbox_inches="tight")
 
+copyfile(args.config, where_save+ '/thisconfig.cfg')
 print('figures saved into '+where_save)

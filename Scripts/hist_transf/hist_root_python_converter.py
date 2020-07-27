@@ -104,9 +104,6 @@ for l in hist_list:
                 counts = h1.values
                 assert len(bins) == len(counts) + 1
                 centroids = (bins[1:] + bins[:-1]) / 2
-                #counts_, bins_, _ = plt.hist(centroids, bins=len(counts),weights=counts, range=(min(bins), max(bins)))
-                #assert np.allclose(bins_, bins)
-                #assert np.allclose(counts_, counts)
                 if config.get('plotting','entries') == '':
                     entry = input("Please enter legend entry for hist "+m+":")
                 else:

@@ -61,8 +61,11 @@ for f in config.get('input','data').split(','):
         print(i)
         score_rnd = np.random.randint(0,2,[s_l.shape[0],])
         score_l = hdf_f[i]
+        if (config.get('selection', 'invert') == '1'):
+          cos_l = [s_l[i, int(not bool(sign))] for i, sign in enumerate(score_l)]
+        else:
+            cos_l = [s_l[i, sign] for i, sign in enumerate(score_l)]
 
-        cos_l = [s_l[i, sign] for i, sign in enumerate(score_l)]
         cos_rnd = [s_l[i, sign] for i, sign in enumerate(score_rnd)]
         rmse_rnd = mean_squared_error(hdf_f[truth],cos_rnd, squared=False)
         chi_statistic, p_value = chisquare(cos_l, hdf_f[truth])

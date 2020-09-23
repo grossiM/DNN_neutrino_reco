@@ -43,6 +43,7 @@ K = 2
 
 for f in config.get('input','data').split(','):  
     hdf_f = pd.read_hdf(f)
+    outfile.write("\n")
     outfile.write('File: ')
     outfile.write(f)
     outfile.write("\n")
@@ -54,9 +55,9 @@ for f in config.get('input','data').split(','):
       print('BINARY')
       s_l = hdf_f[['sol0_cos_theta','sol1_cos_theta']].values
       
-      #for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_rounded_score'):
+      for i in fnmatch.filter(hdf_f.columns, '*' + config.get('input','model_sel') + '*_rounded_score'):
       
-      for i in fnmatch.filter(hdf_f.columns, config.get('input','model_sel') + '*'):
+      #for i in fnmatch.filter(hdf_f.columns, config.get('input','model_sel') + '*'):
       #selection criterion
         print(i)
         score_rnd = np.random.randint(0,2,[s_l.shape[0],])

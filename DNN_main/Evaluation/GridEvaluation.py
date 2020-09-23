@@ -74,8 +74,8 @@ class GridEvaluation():
 
         if self.config.get('evaluation','type') == 'binary':
             plt.figure(1)
-            plt.legend(loc='upper right', ncol=2, fancybox=True, fontsize='small')
-            plt.ylabel('fakes')
+            plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
+            plt.xlabel('Contamination')
             plt.ylabel('efficiency')
             plt.title('ROC curves')
             self.fig_roc.savefig(self.config.get('evaluation', 'output') + '/roc_curves.pdf')

@@ -93,11 +93,16 @@ b1,b2,b3 = float(bins[0]), float(bins[1]), float(bins[2])
 
 good = []
 for wildcard in config.get('selection','wildcard').split(','):
-    # if config.get('selection','type') == 'binary': # These two lines need to be commented out
-    #     wildcard += '_rounded_score'               # to train on autoai output or SELECTION CRITERIA
+    if config.get('selection','type') == 'binary': # These two lines need to be commented out
+        print('BINARY')
+        wildcard += '_rounded_score'               # to train on autoai output or SELECTION CRITERIA
+    print('wildcard: ',wildcard)
     # elif config.get('selection','type') == 'regression':
     #     wildcard += '_pred'
+    #print('col: ',hdf_long.columns)
+    print('match: ',fnmatch.filter(hdf_long.columns,wildcard))
     good = good + fnmatch.filter(hdf_long.columns,wildcard)
+    print('good: ',good)
 
 if config.get('selection','type') == 'binary':
 

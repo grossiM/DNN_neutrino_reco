@@ -8,7 +8,6 @@ import os
 input_file = sys.argv[1]
 output_path = sys.argv[2]
 binning = sys.argv[3]
-sample = sys.argv[4]
 
 os.system('mkdir '+output_path)
 

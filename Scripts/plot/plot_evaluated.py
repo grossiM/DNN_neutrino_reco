@@ -148,6 +148,10 @@ def plot_bin(name, avlb_pol, where, random=False):
         if pol_type == 'long':
             if random: score_l = np.random.randint(0,2,[s_l.shape[0],])
             else: score_l = hdf_long[name]
+            nall = score_l.shape[0]
+            comparison = np.ones((nall,), dtype=bool)
+            np.not_equal(hdf_long['v_mu_label'].values,hdf_long[name],comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
             if (config.get('plotting', 'invert') == '1'):
                 cos_l = [s_l[i, int(not bool(sign))] for i, sign in enumerate(score_l)]
             else:
@@ -158,6 +162,10 @@ def plot_bin(name, avlb_pol, where, random=False):
         elif pol_type == 'trans':
             if random: score_t = np.random.randint(0,2,[s_t.shape[0],])
             else: score_t = hdf_trans[name]
+            nall = score_t.shape[0]
+            comparison = np.ones((nall,), dtype=bool)
+            np.not_equal(hdf_trans['v_mu_label'].values,hdf_trans[name],comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
             if (config.get('plotting', 'invert') == '1'):
                 cos_t = [s_t[i, int(not bool(sign))] for i, sign in enumerate(score_t)]
             else:
@@ -169,6 +177,10 @@ def plot_bin(name, avlb_pol, where, random=False):
         elif pol_type == 'unpol':
             if random: score_u = np.random.randint(0,2,[s_u.shape[0],])
             else: score_u = hdf_unpol[name]
+            nall = score_u.shape[0]
+            comparison = np.ones((nall,), dtype=bool)
+            np.not_equal(hdf_unpol['v_mu_label'].values,hdf_unpol[name],comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
             if (config.get('plotting', 'invert') == '1'):
                 cos_u = [s_u[i, int(not bool(sign))] for i, sign in enumerate(score_u)]
             else:
@@ -179,6 +191,10 @@ def plot_bin(name, avlb_pol, where, random=False):
         elif pol_type == 'fullcomp':
             if random: score_f = np.random.randint(0,2,[s_f.shape[0],])
             else: score_f = hdf_full_comp[name]
+            nall = score_f.shape[0]
+            comparison = np.ones((nall,), dtype=bool)
+            np.not_equal(hdf_full_comp['v_mu_label'].values,hdf_full_comp[name],comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
             if (config.get('plotting', 'invert') == '1'):
                 cos_f = [s_f[i, int(not bool(sign))] for i, sign in enumerate(score_f)]
             else:
@@ -323,7 +339,9 @@ art_u.append(lgd_u)
 plt.xlabel(config.get('plotting','xlabel'))
 #plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
-#plt.ylim((0, 1.2*plt.ylim()[1]))
+ymin, ymax = plt.ylim()
+plt.annotate(r'Unpolarized OSP',xy=(-0.8, 1.1*ymax),fontsize=14,weight='bold')
+plt.ylim((0, 1.2*plt.ylim()[1]))
 # plt.ylim((0, 1.2))
 
 plt.figure(4)
@@ -334,7 +352,9 @@ art_f.append(lgd_f)
 plt.xlabel(config.get('plotting','xlabel'))
 #plt.xlabel('cos'+r'$\theta$')
 plt.ylabel('Number of events')
-#plt.ylim((0, 1.2*plt.ylim()[1]))
+ymin, ymax = plt.ylim()
+plt.annotate(r'Full computation',xy=(-0.8, ymax),fontsize=14,weight='bold')
+# plt.ylim((0, 1.2*plt.ylim()[1]))
 # plt.ylim((0, 1.2))
 
 fig_long.savefig(where_save + '/theta_long.pdf', additional_artists=art_l,bbox_inches="tight")

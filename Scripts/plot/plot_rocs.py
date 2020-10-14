@@ -98,13 +98,6 @@ for wildcard in config.get('selection','wildcard').split(','):
     good_all = fnmatch.filter(hdf_long.columns,wildcard+'*')
     good_rounded = fnmatch.filter(good_all,'*_rounded_score')
     good += set(good_all).difference(good_rounded)
-
-if config.get('selection','type') == 'binary':
-
-    s_l = hdf_long[['sol0_cos_theta','sol1_cos_theta']].values
-    s_t = hdf_trans[['sol0_cos_theta','sol1_cos_theta']].values
-    s_u = hdf_unpol[['sol0_cos_theta','sol1_cos_theta']].values
-    s_f = hdf_full_comp[['sol0_cos_theta','sol1_cos_theta']].values
     
 """"""
 

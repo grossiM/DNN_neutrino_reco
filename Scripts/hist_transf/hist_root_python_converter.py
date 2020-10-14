@@ -116,9 +116,9 @@ for l in hist_list:
                     color = 'C' + first_color
                     h1p = plt.hist(centroids, bins=len(counts), weights=counts, range=(min(bins), max(bins)), histtype='stepfilled', facecolor='w', hatch='//', edgecolor=color, density=False, linewidth=2, label=entry)
                 else:
-                    color = 'C' + str(index)
-                    if (index < int(first_color) + 1):
-                        color = 'C' + str(index-1)
+                    color = 'C' + str(index+1)
+                    if (index < int(first_color)):
+                        color = 'C' + str(index)
                     h1p = plt.hist(centroids, bins=len(counts),weights=counts, range=(min(bins), max(bins)),label=entry, density=False, histtype='step', linewidth=2, edgecolor=color)
                 if save_npz:
                     np.savez(base_name + '/hNEW_' + title + '_' + new_label, h1p= h1p)

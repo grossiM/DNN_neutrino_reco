@@ -14,6 +14,8 @@ from sklearn.preprocessing import StandardScaler
 from joblib import dump, load
 from sklearn.metrics import roc_auc_score, roc_curve
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 repo = os.environ['NEW_REPO']
@@ -84,7 +86,7 @@ class GridEvaluation():
             output_file = self.config.get('evaluation', 'output')+'/'+sample
             print(">>> Writing output "+output_file+" ...")
             #self.pd_eval[sample].to_hdf(output_file, 'evaluated_data', mode='w', table=True)
-            self.pd_eval[sample].to_hdf(output_file, 'evaluated_data', mode='w', format='table')
+            self.pd_eval[sample].to_hdf(output_file, 'evaluated_data', mode='w')
 
     #########################################################################
 

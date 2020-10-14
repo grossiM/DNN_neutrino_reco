@@ -59,9 +59,14 @@ try:
 except NameError:
     print('not all polarized calibrated sample provided')
 
-
+hdf_long = hdf_long.reindex(sorted(hdf_long.columns), axis=1)
+hdf_trans = hdf_trans.reindex(sorted(hdf_trans.columns), axis=1)
+hdf_unpol = hdf_unpol.reindex(sorted(hdf_unpol.columns), axis=1)
+hdf_full_comp = hdf_full_comp.reindex(sorted(hdf_full_comp.columns), axis=1)
+print('hdf_long: ',hdf_long.columns)
 #selection and removal
 to_rm = config.get('selection','discard').split(',')
+print(to_rm)
 
 ###
 for model_to_rm in to_rm:
@@ -99,9 +104,9 @@ def plot_scat(name,avlb_pol):
     
     hid = name.split('bat')[0].split('hid')[1]
     neu = name.split('bat')[0].split('hid')[0].split('neu')[1]
-    entry = '{0} neu {1} hid. layers.'.format(neu,hid)
-
-
+    #entry = '{0} neu {1} hid. layers.'.format(neu,hid)
+    entry = '{0}hid. layers.'.format(hid)
+    
 
     for pol_type in avlb_pol:
         if pol_type == 'long':

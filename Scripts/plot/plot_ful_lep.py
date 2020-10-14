@@ -64,7 +64,10 @@ print('Models containing Nan: \n {0}'.format(long_rm))
 trans_rm = hdf_trans.columns[hdf_trans.isna().any()].tolist()
 
 hdf_long = hdf_long.drop(long_rm,axis=1)
+hdf_long = hdf_long.reindex(sorted(hdf_long.columns), axis=1)
+
 hdf_trans = hdf_trans.drop(trans_rm,axis=1)
+hdf_trans = hdf_trans.reindex(sorted(hdf_trans.columns), axis=1)
 
 for model_to_rm in to_rm:
     bad_mod = fnmatch.filter(hdf_long.columns, '*'+ model_to_rm + '*')
@@ -146,15 +149,20 @@ for wildcard in config.get('selection','wildcard').split(','):
         el_py_list_trans = (fnmatch.filter(hdf_trans.columns, '*'+lep_cat_list[3]+'*'))
 
 
-        good_mu_pxl = good_mu_pxl + fnmatch.filter(mu_px_list_long,wildcard + '*')
+        good_mu_pxl = (good_mu_pxl + fnmatch.filter(mu_px_list_long,wildcard + '*'))
         good_mu_pyl = good_mu_pyl + fnmatch.filter(mu_py_list_long,wildcard + '*')
         good_mu_pxt = good_mu_pxt + fnmatch.filter(mu_px_list_trans,wildcard + '*')
         good_mu_pyt = good_mu_pyt + fnmatch.filter(mu_py_list_trans,wildcard + '*')
+        print('good_mu_pxl ##########: ',good_mu_pxl)
+        print('good_mu_pyl ##########: ',good_mu_pyl)
 
         good_el_pxl = good_el_pxl + fnmatch.filter(el_px_list_long,wildcard + '*')
         good_el_pyl = good_el_pyl + fnmatch.filter(el_py_list_long,wildcard + '*')
         good_el_pxt = good_el_pxt + fnmatch.filter(el_px_list_trans,wildcard + '*')
         good_el_pyt = good_el_pyt + fnmatch.filter(el_py_list_trans,wildcard + '*')
+        print('good_el_pxl ##########: ',good_el_pxl)
+        print('good_el_pyl ##########: ',good_el_pyl)
+
     else:
         print('wrong selection type')
 
@@ -207,7 +215,7 @@ def plot_neutrinospt(name_el_lx,name_el_ly,name_mu_lx,name_mu_ly,name_el_tx,name
         hid = name_el_lx.split('bat')[0].split('hid')[1]
         neu = name_el_lx.split('bat')[0].split('hid')[0].split('neu')[1]
         entry = '{0} neu {1} hid. layers.'.format(neu,hid)
-
+        print('ENTRY: ',entry)
         if (config.get('plotting', 'normalize') == '1'):
             normalize = True
         else:
@@ -290,7 +298,15 @@ elif config.get('selection','type') == 'regneutrinos':
     file_name = '/pt_vv'
     for i,j,k,l,p,q,r,s in zip(good_el_pxl,good_el_pyl,good_mu_pxl,good_mu_pyl,good_el_pxt,good_el_pyt,good_mu_pxt,good_mu_pyt):
         plot_neutrinospt(i,j,k,l,p,q,r,s,pol_list,where_save)
-        print(i)
+        print('i *************+: ',i)
+        print('j *************+: ',j)
+        print('k *************+: ',k)
+        print('l *************+: ',l)
+        print('p *************+: ',p)
+        print('q *************+: ',q)
+        print('r *************+: ',r)
+        print('s *************+: ',s)
+
 else:
     raise ValueError('Error: wrong evaluation type selected')
 

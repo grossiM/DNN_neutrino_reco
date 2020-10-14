@@ -194,10 +194,10 @@ def plot_bin(name, avlb_pol, where):
             cos_l_10M = [s_l_10M[i, sign] for i, sign in enumerate(score_l_10M)]
             
             plt.figure(1)
-            h_long = plt.hist(cos_l_10k, np.arange(b1, b2, b3), label=entry+'_10k', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(cos_l_100k, np.arange(b1, b2, b3), label=entry+'_100k', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(cos_l_1M, np.arange(b1, b2, b3), label=entry+'_1M', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(cos_l_10M, np.arange(b1, b2, b3), label=entry+'_10M', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(cos_l_10k, np.arange(b1, b2, b3), label=entry+' 10k', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(cos_l_100k, np.arange(b1, b2, b3), label=entry+' 100k', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(cos_l_1M, np.arange(b1, b2, b3), label=entry+' 1M', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(cos_l_10M, np.arange(b1, b2, b3), label=entry+' 10M', density=True, histtype='step', linewidth=2)
 
             plt.figure(5)
             fp , tp, th = roc_curve(hdf_long_10k['v_mu_label'].values, hdf_long_10k[name_short].values)
@@ -319,7 +319,8 @@ def plot_reg(name,avlb_pol, where):
     neu = name.split('bat')[0].split('hid')[0].split('neu')[1]
     print(neu)
     print(hid)
-    entry = '{0} neu {1} hid. layers '.format(neu,hid)
+    #entry = '{0} neu {1} hid. layers '.format(neu,hid)
+    entry = 'events'
 
     for pol_type in avlb_pol:
 
@@ -331,34 +332,34 @@ def plot_reg(name,avlb_pol, where):
         if pol_type == 'long':
             plt.figure(1)
             plt.legend()
-            h_long = plt.hist(hdf_long_10k[name].values, np.arange(b1, b2, b3), label=entry +'10k', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(hdf_long_100k[name].values, np.arange(b1, b2, b3), label=entry+'100k', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(hdf_long_1M[name].values, np.arange(b1, b2, b3), label=entry+'1M', density=True, histtype='step', linewidth=2)
-            h_long = plt.hist(hdf_long_10M[name_10M].values, np.arange(b1, b2, b3), label=entry+'10M', density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long_10k[name].values, np.arange(b1, b2, b3), label= '10k '+ entry, density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long_100k[name].values, np.arange(b1, b2, b3), label='100k '+ entry, density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long_1M[name].values, np.arange(b1, b2, b3), label='1M '+ entry, density=True, histtype='step', linewidth=2)
+            h_long = plt.hist(hdf_long_10M[name_10M].values, np.arange(b1, b2, b3), label='10M '+ entry, density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'trans':
             print(hdf_trans_10k[name][:10])
             plt.figure(2)
             plt.legend()
-            h_trans = plt.hist(hdf_trans_10k[name].values, np.arange(b1, b2, b3), label=entry +'10k', density=True, histtype='step', linewidth=2)
-            h_trans = plt.hist(hdf_trans_100k[name].values, np.arange(b1, b2, b3), label=entry +'100k', density=True, histtype='step', linewidth=2)
-            h_trans = plt.hist(hdf_trans_1M[name].values, np.arange(b1, b2, b3), label = entry +'1M', density=True, histtype='step', linewidth=2)
-            h_trans = plt.hist(hdf_trans_10M[name_10M].values, np.arange(b1, b2, b3), label=entry +'10M', density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans_10k[name].values, np.arange(b1, b2, b3), label='10k '+ entry, density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans_100k[name].values, np.arange(b1, b2, b3), label='100k '+ entry, density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans_1M[name].values, np.arange(b1, b2, b3), label = entry +'1M ', density=True, histtype='step', linewidth=2)
+            h_trans = plt.hist(hdf_trans_10M[name_10M].values, np.arange(b1, b2, b3), label=entry +'10M ', density=True, histtype='step', linewidth=2)
 
         elif pol_type == 'unpol':
             plt.figure(3)
             plt.legend()
-            h_unpol = plt.hist(hdf_unpol_10k[name].values, np.arange(b1, b2, b3), label=entry +'10k', density=True, histtype='step', linewidth=2)
-            h_unpol = plt.hist(hdf_unpol_100k[name].values, np.arange(b1, b2, b3), label=entry +'100k', density=True, histtype='step', linewidth=2)
-            h_unpol = plt.hist(hdf_unpol_1M[name].values, np.arange(b1, b2, b3), label = entry +'1M', density=True, histtype='step', linewidth=2)
-            h_unpol = plt.hist(hdf_unpol_10M[name_10M].values, np.arange(b1, b2, b3), label=entry +'10M', density=True, histtype='step', linewidth=1)
+            h_unpol = plt.hist(hdf_unpol_10k[name].values, np.arange(b1, b2, b3), label='10k '+ entry, density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol_100k[name].values, np.arange(b1, b2, b3), label='100k '+ entry, density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol_1M[name].values, np.arange(b1, b2, b3), label = '1M '+ entry, density=True, histtype='step', linewidth=2)
+            h_unpol = plt.hist(hdf_unpol_10M[name_10M].values, np.arange(b1, b2, b3), label='10M '+ entry, density=True, histtype='step', linewidth=1)
 
         elif pol_type == 'fullcomp':
             plt.figure(4)
             h_full = plt.hist(hdf_full_comp_10k[name].values, np.arange(b1, b2, b3),label=entry+'10k', density=True, histtype='step', linewidth=2)
-            h_full = plt.hist(hdf_full_comp_100k[name].values, np.arange(b1, b2, b3), label=entry+'100k', density=True, histtype='step', linewidth=2)
-            h_full = plt.hist(hdf_full_comp_1M[name].values, np.arange(b1, b2, b3), label=entry+'1M', density=True, histtype='step', linewidth=2)
-            h_full = plt.hist(hdf_full_comp_10M[name_10M].values, np.arange(b1, b2, b3), label=entry+'10M', density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp_100k[name].values, np.arange(b1, b2, b3),label= '100k'+ entry, density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp_1M[name].values, np.arange(b1, b2, b3), label='1M'+ entry, density=True, histtype='step', linewidth=2)
+            h_full = plt.hist(hdf_full_comp_10M[name_10M].values, np.arange(b1, b2, b3), label='10M'+ entry, density=True, histtype='step', linewidth=2)
 
 
         else:

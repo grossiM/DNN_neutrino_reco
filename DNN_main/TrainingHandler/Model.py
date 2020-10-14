@@ -1,9 +1,9 @@
 import sys
-
+from tensorflow import keras
 from keras.models import Sequential, load_model
-from keras.activations import relu,linear,elu,sigmoid,tanh
+from keras.activations import relu,linear,elu,sigmoid,tanh,softmax
 from keras.layers import Dense, LeakyReLU, Dropout
-from keras.optimizers import Adam, SGD
+from keras.optimizers import *
 from keras import metrics
 from keras import losses
 import keras.backend as K
@@ -26,6 +26,11 @@ def build(properties):
         properties['neurons'] = int(properties['neurons'])
         #properties['output-dim'] = int(properties['output-dim'])
         properties['dropout-rate'] = float(properties['dropout-rate'])
+        properties['learning_rate'] = float(properties['learning_rate'])
+        if properties['optimizer'] is 'adam':
+            properties['optimizer'] = keras.optimizers.Adam(learning_rate=properties['learning_rate'])
+        elif properties['optimizer'] is 'sgd':
+            properties['optimizer'] = keras.optimizers.SGD(learning_rate=properties['learning_rate'])
 
         if properties['hidden-layers'] > 0:
             model.add(Dense(units=properties['neurons'], input_dim=properties['input_dim'],

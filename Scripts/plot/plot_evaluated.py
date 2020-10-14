@@ -68,6 +68,11 @@ try:
 except NameError:
     print('not all polarized calibrated sample provided')
 
+hdf_long = hdf_long.reindex(sorted(hdf_long.columns), axis=1)
+hdf_trans = hdf_trans.reindex(sorted(hdf_trans.columns), axis=1)
+hdf_unpol = hdf_unpol.reindex(sorted(hdf_unpol.columns), axis=1)
+hdf_full_comp = hdf_full_comp.reindex(sorted(hdf_full_comp.columns), axis=1)
+
 
 #################################################################selection and removal
 to_rm = config.get('selection','discard').split(',')
@@ -268,7 +273,7 @@ if config.get('plotting','random-choice') == '1':
 
 for c in good:
     #here implement check if binary or regression!
-    print(c)
+    print('good: ',c)
     if config.get('selection','type') == 'binary':
         plot_bin(c,pol_list,where_save)
     elif config.get('selection','type') == 'regression':

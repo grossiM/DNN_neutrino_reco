@@ -18,6 +18,8 @@ import keras.backend as K
 
 import Grid
 import Configurables
+import matplotlib
+matplotlib.use('Agg')
 from plotting_func import plot_history
 import Model
 #import new_model
@@ -40,9 +42,13 @@ class TrainingHandler():
         pd_train_frames = []
         pd_val_frames = []
         for train_sample in self.properties['data-train'].split(','):
-            pd_train_frames.append(pd.read_hdf(train_sample))
+            pd_train_frame = pd.read_hdf(train_sample)
+            if (self.properties['selection']!='none'): pd_train_frames.append(pd_train_frame.query(self.properties['selection']))
+            else: pd_train_frames.append(pd_train_frame)
         for val_sample in self.properties['data-val'].split(','):
-            pd_val_frames.append(pd.read_hdf(val_sample))
+            pd_val_frame = pd.read_hdf(val_sample)
+            if (self.properties['selection']!='none'): pd_val_frames.append(pd_val_frame.query(self.properties['selection']))
+            else: pd_val_frames.append(pd_val_frame)
         pd_train = pd.concat(pd_train_frames)
         pd_val = pd.concat(pd_val_frames)
         training_variables = self.properties['training-variables'].split(',')
@@ -111,9 +117,9 @@ class TrainingHandler():
         if self.properties['scale-label'] == '1':
             label_scaler = StandardScaler()
             if self.properties['output-dim'] == 1:
-                label_scaler.fit(np.expand_dims(self.labels_train,1))
-                self.labels_train_scaled = label_scaler.transform(np.expand_dims(self.labels_train,1))
-                self.labels_val_scaled = label_scaler.transform(np.expand_dims(self.labels_val,1))
+                label_scaler.fit(self.labels_train)
+                self.labels_train_scaled = label_scaler.transform(self.labels_train)
+                self.labels_val_scaled = label_scaler.transform(self.labels_val)
                 #self.labels_train = label_scaler.transform(np.expand_dims(self.labels_train,1))
                 #self.labels_val = label_scaler.transform(np.expand_dims(self.labels_val,1))
             else:
@@ -126,6 +132,8 @@ class TrainingHandler():
             #joblib.dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
             dump(label_scaler, self.properties['output-folder']+ "/label_scaler.pkl")
 
+        else:
+            self.labels_train_scaled = self.labels_train
 
         model = Model.build(self.properties)
 

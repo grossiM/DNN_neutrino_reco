@@ -83,6 +83,7 @@ print('ORIGINAL TRANSVERSE_DIMENSION: ',hdf_mix_t.shape[0])
 
 
 """"""
+#the unpolarized sample does not have a truth so I need to plot the score (not rounded)
 def plot_bin(name, where, random=False):
 
     entry = name.split('_')[0].replace('bat128','')

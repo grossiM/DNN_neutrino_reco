@@ -1,3 +1,4 @@
+
 import os
 import sys
 import configparser
@@ -13,16 +14,23 @@ from sklearn.preprocessing import StandardScaler
 #from sklearn.externals import joblib
 from joblib import dump, load
 from sklearn.metrics import auc, roc_auc_score, roc_curve
+from scipy import interp
 
 import matplotlib.pyplot as plt
 
 repo = os.environ['NEW_REPO']
+#home = os.path.expanduser('~')
 sys.path.append(repo + '/DNN_neutrino_reco/Utils/DataHandler')
+#sys.path.append(home + '/DNN_neutrino_reco/Utils/DataHandler')
+
 
 import optimizeThr as ot
 import handler_kinematics as kinematics
 import tables
 
+neuscan = True
+hidscan = True
+batscan = False
 finalconfig = True
 
 class GridEvaluation():
@@ -36,7 +44,7 @@ class GridEvaluation():
 		training_variables = self.config.get('training', 'training-variables').split(',')
 		training_labels = self.config.get('training', 'training-labels').split(',')
 
-		print(">>> Loading datasets ...TEST ")
+		print(">>> Loading datasets ... ")
 
 		self.pd_names = []
 		self.pd_eval = {}
@@ -77,26 +85,19 @@ class GridEvaluation():
 		self.evaluate_all()
 
 		if self.config.get('evaluation','type') in ['binary', 'categorization']:
-			fig_roc = plt.figure(1)
-			art_r = []
-			lgd_r = plt.legend(loc=9, bbox_to_anchor=(0.5, -0.2),ncol=3, fancybox=True, fontsize='small')
-			art_r.append(lgd_r)
-			plt.title('ROC curves')
-			plt.xlabel('1 - purity')
-			plt.ylabel('efficiency')
-			self.fig_roc.savefig(self.config.get('evaluation', 'output') + '/roc_curves.pdf', bbox_extra_artists=art_r,bbox_inches="tight")
-			# plt.figure(1)
-			# plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
-			# #plt.xlabel('fakes')
-			# plt.xlabel('1 - purity')
-			# plt.ylabel('efficiency')
-			# plt.title('ROC curves')
-			# self.fig_roc.savefig(self.config.get('evaluation', 'output') + '/roc_curves.pdf')
 			plt.figure(1)
-			plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
-			#plt.xlabel('fakes')
-			plt.xlabel('1 - purity')
+			#plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
+			plt.legend(loc='lower right', ncol=1, fancybox=True, fontsize=12, frameon=False)
 			plt.ylabel('efficiency')
+			plt.xlabel('1 - purity')
+			plt.xlim(0.0, 1.0)
+			plt.ylim(0.0, 1.0)
+			plt.title('ROC curves')
+			self.fig_roc.savefig(self.config.get('evaluation', 'output') + '/roc_curves.pdf')
+			plt.figure(1)
+			plt.legend(loc='upper left', ncol=1, fancybox=True, fontsize=12, frameon=False)
+			plt.ylabel('efficiency')
+			plt.xlabel('1 - purity')
 			plt.xlim(0.15, 0.6)
 			plt.ylim(0.4, 0.85)
 			plt.title('ROC curves')
@@ -105,36 +106,45 @@ class GridEvaluation():
 		if self.config.get('evaluation','type') == 'categorization':
 			plt.figure(2)
 			plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
-			#plt.xlabel('fakes')
-			plt.xlabel('1 - purity')
 			plt.ylabel('efficiency')
+			plt.xlabel('1 - purity')
 			plt.title('Micro average ROC curves')
 			self.fig_roc_microav.savefig(self.config.get('evaluation', 'output') + '/roc_curves_microav.pdf')
 			plt.figure(3)
 			plt.legend(loc='lower right', ncol=2, fancybox=True, fontsize='small')
-			#plt.xlabel('fakes')
-			plt.xlabel('1 - purity')
 			plt.ylabel('efficiency')
+			plt.xlabel('1 - purity')
 			plt.title('Macro average ROC curves')
 			self.fig_roc_macroav.savefig(self.config.get('evaluation', 'output') + '/roc_curves_macroav.pdf')
 			plt.figure(2)
-			plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
-			#plt.xlabel('fakes')
-			plt.xlabel('1 - purity')
+			plt.legend(loc='upper left', ncol=1, fancybox=True, fontsize=12, frameon=False)
 			plt.ylabel('efficiency')
+			plt.xlabel('1 - purity')
 			plt.xlim(0.15, 0.4)
 			plt.ylim(0.6, 0.85)
-			plt.title('Micro average ROC curves')
+			#plt.title('Micro average ROC curves')
+			if neuscan == True:
+				plt.title('ROC curves - neurons')
+			if hidscan == True:
+				plt.title('ROC curves - hidden layers')
+			if batscan == True:
+				plt.title('ROC curves - batch size')
 			self.fig_roc_microav.savefig(self.config.get('evaluation', 'output') + '/roc_curves_microav_zoom.pdf')
 			plt.figure(3)
-			plt.legend(loc='upper left', ncol=2, fancybox=True, fontsize='small')
-			#plt.xlabel('fakes')
-			plt.xlabel('1 - purity')
+			plt.legend(loc='upper left', ncol=1, fancybox=True, fontsize=12, frameon=False)
 			plt.ylabel('efficiency')
+			plt.xlabel('1 - purity')
 			plt.xlim(0.15, 0.4)
 			plt.ylim(0.6, 0.85)
-			plt.title('Macro average ROC curves')
+			#plt.title('Macro average ROC curves')
+			if neuscan == True:
+				plt.title('ROC curves - neurons')
+			if hidscan == True:
+				plt.title('ROC curves - hidden layers')
+			if batscan == True:
+				plt.title('ROC curves - batch size')
 			self.fig_roc_macroav.savefig(self.config.get('evaluation', 'output') + '/roc_curves_macroav_zoom.pdf')
+
 
 		for sample in self.pd_names:
 			output_file = self.config.get('evaluation', 'output')+'/'+sample
@@ -159,11 +169,13 @@ class GridEvaluation():
 
 	def evaluate_all(self):
 		for model_dir in self.dirs:
+			if not os.path.isdir(self.config.get('output','output-folder') + '/' + model_dir):
+				continue
 			models = os.listdir(self.config.get('output','output-folder') + '/' + model_dir)
 			models = fnmatch.filter(models, self.config.get('evaluation','model-of-interest'))
 			if len(models) == 0:
 				raise ValueError('No models mathcing pattern '+self.config.get('evaluation','model-of-interest')+' found in '+model_dir)
-			if len(models) > 1 and self.config.get('evaluation', 'type') == 'binary':
+			if len(models) > 1 and self.config.get('evaluation', 'type') in ['binary', 'categorization']:
 				warnings.warn('Only '+models[-1]+' score will be rounded')
 			for model_ep in models:
 				for sample in self.pd_names:
@@ -198,10 +210,7 @@ class GridEvaluation():
 			else:
 				for cat in range(pred.shape[1]):
 					self.pd_eval[sample][model_dir+'_cat'+str(cat)+'_e'+epoch] = pred[:,cat]
-			#model_label = model_dir + '_e' + epoch
-			hid = model_dir.split('bat')[0].split('hid')[1]
-			neu = model_dir.split('bat')[0].split('hid')[0].split('neu')[1]
-			model_label = '{0} neu {1} hid. layers.'.format(neu,hid)
+			model_label = model_dir + '_e' + epoch
 		else: 
 			print(">>> Evaluating model " + model_dir + " on sample " + sample.split('.')[0] + " ... ")
 			if pred.shape[1]==1:
@@ -212,25 +221,21 @@ class GridEvaluation():
 			hid = model_dir.split('bat')[0].split('hid')[1]
 			neu = model_dir.split('bat')[0].split('hid')[0].split('neu')[1]
 			model_label = '{0} neu {1} hid. layers.'.format(neu,hid)
-			#model_label = model_dir
 
 		if self.config.get('evaluation', 'type') == 'binary' and pred.shape[1]==1:
 			plt.figure(1)
 			roc_auc = roc_auc_score(self.truth_eval[sample], pred)
-			print(">>> AUC: ",roc_auc)
+			print(">>> AUC: ",auc)
 			fp , tp, th = roc_curve(self.truth_eval[sample], pred)
 			thr = ot.optimizeThr(fp,tp,th)
-			plt.plot(fp, tp, label= model_label + 'AUC_'+str(round(roc_auc,2)))
+			plt.plot(fp, tp, label=model_label)
 
 			selection = self.roundScore(pred, thr)
 			self.pd_eval[sample][model_dir+'_rounded_score'] = selection
-			
+
 			nall = selection.shape[0]
 			comparison = np.ones((nall,1), dtype=bool)
-			np.equal(self.truth_eval[sample],selection,comparison)
-			#np.equal(np.expand_dims(self.truth_eval[sample],1),selection,comparison)
-
-
+			np.equal(np.expand_dims(self.truth_eval[sample],1),selection,comparison)
 			print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
 
 		if self.config.get('evaluation', 'type') == 'categorization' and pred.shape[1]>1:
@@ -242,23 +247,25 @@ class GridEvaluation():
 			thr = dict()
 			roc_auc = dict()
 			pol = {0 : "LL", 1 : "LT", 2 : "TT"}
+			if neuscan == True:
+				label = "neurons = " + model_label.split('hid')[0].split('neu')[-1]
+			if hidscan == True:
+				label = "layers = " + model_label.split('hid')[1].split('bat')[0]
+			if batscan == True:
+				label = "batch size = " + model_label.split('bat')[-1].split('_')[0]
 			if finalconfig == True:
-				label = model_label.split('_')[0].split('bat')[0]
-				#label = model_label
-				print('LABEL: ',label)
-				print('*'*20)
-
+				label = model_label
 			for cat in range(n_classes):
 				roc_auc[cat] = roc_auc_score(self.truth_eval[sample][:,cat], pred[:,cat])
 				print(">>> AUC (class " + str(cat) + "): ",roc_auc[cat])
 				fp[cat], tp[cat], th[cat] = roc_curve(self.truth_eval[sample][:,cat], pred[:,cat])
 				thr[cat], var1, var2 = ot.optimizeThr(fp[cat],tp[cat],th[cat])
 				#plt.plot(fp[cat], tp[cat], label=model_label + " (class " + str(cat) + ")")
+				#plt.plot(fp[cat], tp[cat], label=model_label + " (class " + pol[cat] + ")")
 				if finalconfig == True:
 					plt.plot(fp[cat], tp[cat], label="class " + pol[cat])
 				else:
 					plt.plot(fp[cat], tp[cat], label=label)
-
 
 				selection = self.roundScore(pred[:,cat], thr[cat])
 				self.pd_eval[sample][model_dir+'_cat'+str(cat)+'_rounded_score'] = selection
@@ -274,7 +281,7 @@ class GridEvaluation():
 			all_fp = np.unique(np.concatenate([fp[i] for i in range(n_classes)]))
 			mean_tp = np.zeros_like(all_fp)
 			for i in range(n_classes):
-				mean_tp += np.interp(all_fp, fp[i], tp[i])
+				mean_tp += interp(all_fp, fp[i], tp[i])
 			mean_tp /= n_classes
 
 			fp["macro"] = all_fp
@@ -282,6 +289,8 @@ class GridEvaluation():
 			roc_auc["macro"] = auc(fp["macro"], tp["macro"])
 
 			plt.figure(2)
-			plt.plot(fp["micro"], tp["micro"], label=model_label)
+			#plt.plot(fp["micro"], tp["micro"], label=model_label)
+			plt.plot(fp["micro"], tp["micro"], label=label)
 			plt.figure(3)
-			plt.plot(fp["macro"], tp["macro"], label=model_label)
+			#plt.plot(fp["macro"], tp["macro"], label=model_label)
+			plt.plot(fp["macro"], tp["macro"], label=label)

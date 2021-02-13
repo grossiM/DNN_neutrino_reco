@@ -179,12 +179,18 @@ class DataHandler():
 
 
     def appendSelectionCriteria(self, flavour='mu'):
-        sel1, sel2, sel3, sel4, sel5 = kinematics.tag_selectioncriteria(self.pdarray, flavour)
+        sel1, sel2, sel3, sel4, sel5, counter_1, counter_2, counter_3, counter_4, counter_5 = kinematics.tag_selectioncriteria(self.pdarray, flavour)
         self.pdarray['v_'+flavour+'_sel1'] = pd.Series(sel1, index=self.pdarray.index)
         self.pdarray['v_'+flavour+'_sel2'] = pd.Series(sel2, index=self.pdarray.index)
         self.pdarray['v_'+flavour+'_sel3'] = pd.Series(sel3, index=self.pdarray.index)
         self.pdarray['v_'+flavour+'_sel4'] = pd.Series(sel4, index=self.pdarray.index)
         self.pdarray['v_'+flavour+'_sel5'] = pd.Series(sel5, index=self.pdarray.index)
+        self.pdarray['rnd_'+flavour+'_counter_1'] = pd.Series(counter_1, index=self.pdarray.index)
+        self.pdarray['rnd_'+flavour+'_counter_2'] = pd.Series(counter_2, index=self.pdarray.index)
+        self.pdarray['rnd_'+flavour+'_counter_3'] = pd.Series(counter_3, index=self.pdarray.index)
+        self.pdarray['rnd_'+flavour+'_counter_4'] = pd.Series(counter_4, index=self.pdarray.index)
+        self.pdarray['rnd_'+flavour+'_counter_5'] = pd.Series(counter_5, index=self.pdarray.index)
+
 
     def getPtvv(self,variables,name='pt_vv'):
         self.pdarray[name] = self.pdarray[variables[0]]+self.pdarray[variables[1]]

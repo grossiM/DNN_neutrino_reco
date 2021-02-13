@@ -100,7 +100,7 @@ good = []
 for wildcard in config.get('selection','wildcard').split(','):
     if config.get('selection','type') == 'binary': # These two lines need to be commented out
         print('BINARY')
-        wildcard += '_rounded_score'               # to train on autoai output or SELECTION CRITERIA
+        #wildcard += '_rounded_score'               # to train on autoai output or SELECTION CRITERIA
     print('wildcard: ',wildcard)
     # elif config.get('selection','type') == 'regression':
     #     wildcard += '_pred'
@@ -208,7 +208,80 @@ def plot_bin(name, avlb_pol, where, random=False):
     np.savez(where + '/h_' + name, unpol=h_unpol, trans=h_trans, long=h_long, fulcomp = h_full)
 
 """"""
+def plot_rnd(avlb_pol, where, random=False):
 
+    for pol_type in avlb_pol:
+
+        pattern = config.get('legend','entry').split(':')
+        entry = 'Random'
+
+        if (config.get('plotting', 'normalize') == '1'):
+            normalize = True
+        else:
+            normalize = False
+
+        if pol_type == 'long':
+            score_l = np.random.randint(0,2,[s_l.shape[0],])
+            
+            nall = score_l.shape[0]
+            comparison = np.ones((nall,), dtype=bool)
+            np.not_equal(hdf_long['v_mu_label'].values,score_l,comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
+            if (config.get('plotting', 'invert') == '1'):
+                cos_l = [s_l[i, int(not bool(sign))] for i, sign in enumerate(score_l)]
+            else:
+                cos_l = [s_l[i, sign] for i, sign in enumerate(score_l)]
+            plt.figure(1)
+            h_long = plt.hist(cos_l, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
+
+        elif pol_type == 'trans':
+            score_t = np.random.randint(0,2,[s_t.shape[0],])
+            
+            nall = score_t.shape[0]
+            comparison = np.ones((nall,), dtype=bool)
+            np.not_equal(hdf_trans['v_mu_label'].values,score_t,comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
+            if (config.get('plotting', 'invert') == '1'):
+                cos_t = [s_t[i, int(not bool(sign))] for i, sign in enumerate(score_t)]
+            else:
+                cos_t = [s_t[i, sign] for i, sign in enumerate(score_t)]
+                cos_tn = [ -i for i in cos_t ] 
+            plt.figure(2)
+            h_trans = plt.hist(cos_t, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
+
+        elif pol_type == 'unpol':
+            score_u = np.random.randint(0,2,[s_u.shape[0],])
+        
+            nall = score_u.shape[0]
+            comparison = np.ones((nall,), dtype=bool)
+            np.not_equal(hdf_unpol['v_mu_label'].values,score_u,comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
+            if (config.get('plotting', 'invert') == '1'):
+                cos_u = [s_u[i, int(not bool(sign))] for i, sign in enumerate(score_u)]
+            else:
+                cos_u = [s_u[i, sign] for i, sign in enumerate(score_u)]
+            plt.figure(3)
+            h_unpol = plt.hist(cos_u, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
+
+        elif pol_type == 'fullcomp':
+            score_f = np.random.randint(0,2,[s_f.shape[0],])
+            nall = score_f.shape[0]
+            comparison = np.ones((nall,), dtype=bool)
+            np.not_equal(hdf_full_comp['v_mu_label'].values,score_f,comparison)
+            print(">>> Fraction of correct predictions: "+str(np.sum(comparison)/nall))
+            if (config.get('plotting', 'invert') == '1'):
+                cos_f = [s_f[i, int(not bool(sign))] for i, sign in enumerate(score_f)]
+            else:
+                cos_f = [s_f[i, sign] for i, sign in enumerate(score_f)]
+            plt.figure(4)
+            h_full = plt.hist(cos_f, np.arange(b1, b2, b3), label=entry, density=normalize, histtype='step', linewidth=2)
+
+        else:
+            print('wrong polarization')
+    name = 'random'
+    np.savez(where + '/h_' + name, unpol=h_unpol, trans=h_trans, long=h_long, fulcomp = h_full)
+
+""""""
 """"""
 def plot_reg(name,avlb_pol, where):
 
@@ -285,7 +358,7 @@ print('looping through selected models:')
 
 if config.get('plotting','random-choice') == '1':
     print('random')
-    plot_bin('random',pol_list,where_save,True)    
+    plot_rnd(pol_list,where_save,True)    
 
 for c in good:
     #here implement check if binary or regression!

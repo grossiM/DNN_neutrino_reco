@@ -11,7 +11,9 @@ repo= os.environ['NEW_REPO']
 sys.path.append(repo + '/DNN_neutrino_reco/DNN_main/Evaluation')
 #sys.path.append(repo + 'neutrinoreconstruction/DeepLearning/backward_compatibility')
 
-import GridEvaluation as ge 
+#import GridEvaluation_nice_legend as ge
+import GridEvaluation as ge
+#import TestGridEvaluation as ge 
 
 import argparse
 

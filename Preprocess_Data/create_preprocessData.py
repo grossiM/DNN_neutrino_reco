@@ -4,8 +4,8 @@
 #macro to create 3 preprocessed data (h5 format) from root file
 #all branches included that can be then selected in training phase
 #input root file - output 3 h5 file + 1 pickle dataset (data_handler)
-#USAGE: python3 create_preprocessData.py -in '/Users/it058990/Desktop/MicheleG/PhD/VBS_COST_Group/GITBicocca/DNN_storage/data/rootfiles/gen81_mu_ewk_semilept_lsf_lhe.root'
-#  -o '/Users/it058990/Desktop/MicheleG/PhD/VBS_COST_Group/GITBicocca/DNN_storage/data/rootfiles' -n 'gen81_mu_ewk_semilept_lsf_lhe' -ch 0 -s ‘0.3:0.3:0.4’
+#USAGE: python3 create_preprocessData.py -in '/rootfiles/gen81_mu_ewk_semilept_lsf_lhe.root'
+#  -o '/rootfiles' -n 'gen81_mu_ewk_semilept_lsf_lhe' -ch 0 -s ‘0.3:0.3:0.4’
 # TRAINING: unpolarized, transverse, longitudinal, mixed(transverse+longitudinal)
 #evaluation: polarized(transverse and longitudinal), unpolarized (to then perform fit and deduce fraction of polarization)
 

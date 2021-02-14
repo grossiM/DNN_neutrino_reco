@@ -73,7 +73,8 @@ The flow of a data analysis like the one proposed here is the following:
           -s  '0.4:0.4:0.2' #separation ratio
           -ch 1 #select channel 0 semi 1 full lep
           #(create_preprocessData.py for semileptonic channel)
-— TRAINING:
+          
+- TRAINING:  
   python3 Training.py -c /path/to/JobOption/NNconfig.cfg
   --> this will create all combination of different NN layout and produce separate naming folders where models, loss, training logs are saved
 

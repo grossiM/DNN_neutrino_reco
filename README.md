@@ -16,6 +16,8 @@ This repository contains instruction to study of neutrino polarization and W bos
    month={Dec}
 }
 
+https://link.springer.com/article/10.1140%2Fepjc%2Fs10052-020-08713-1
+
 ### Requirements
 
 - Python                3.7

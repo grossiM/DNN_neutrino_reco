@@ -1,6 +1,6 @@
 #  Comparing traditional and deep-learning techniques of kinematic reconstruction for polarization discrimination in vector boson scattering
 
-This repository contains instruction to study of neutrino polarization and W boson reference frame using classical and deep learning techniques. Please cite this work if using this code: 
+This repository contains the code used to study the Vector Boson Scattering, in particular the neutrino polarization and W boson reference frame using classical and deep learning techniques. Please cite this work if using this code: 
 
 @article{Grossi_2020,
    title={Comparing traditional and deep-learning techniques of kinematic reconstruction for polarization discrimination in vector boson scattering},

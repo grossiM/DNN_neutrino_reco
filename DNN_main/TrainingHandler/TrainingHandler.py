@@ -1,3 +1,6 @@
+#################################
+# M. Grossi - J.Novak #2019
+################################
 import sys
 import os
 import configparser

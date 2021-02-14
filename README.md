@@ -73,7 +73,7 @@ The flow of a data analysis like the one proposed here is the following:
           -s  '0.4:0.4:0.2' #separation ratio
           -ch 1 #select channel 0 semi 1 full lep
           
-(create_preprocessData.py for semileptonic channel)
+   (create_preprocessData.py for semileptonic channel)
 
 — TRAINING of preprocessed data according to specific configuration file:
   python3 Training.py -c /path/to/JobOption/NNconfig.cfg

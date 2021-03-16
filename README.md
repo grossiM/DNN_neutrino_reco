@@ -1,5 +1,7 @@
 #  Comparing traditional and deep-learning techniques of kinematic reconstruction for polarization discrimination in vector boson scattering
 
+### Introduction
+
 This repository contains the code used to study the Vector Boson Scattering, in particular the neutrino polarization and W boson reference frame using classical and deep learning techniques. Please cite this work if using this code: 
 
 @article{Grossi_2020,
@@ -18,6 +20,8 @@ This repository contains the code used to study the Vector Boson Scattering, in 
 
 https://link.springer.com/article/10.1140%2Fepjc%2Fs10052-020-08713-1
 
+The applicability of the provided workflow goes beyond the specific use in the context of the HEP event generation. The parts of it can be reused for any simple DNN application. It provides a framework for a grid search optimization, where several DNN models are trained in a sequence, each with a different parameter combination.
+
 ### Requirements
 
 - Python                3.7
@@ -27,6 +31,7 @@ https://link.springer.com/article/10.1140%2Fepjc%2Fs10052-020-08713-1
 - scikit-learn          0.23.1
 - tensorflow            2.1.0
 - uproot                3.11.2
+- Pandas                1.2.2
 - root-numpy            4.8.0
 
 We strongly advice to create a dedicated virtual python environment using 
@@ -34,8 +39,11 @@ We strongly advice to create a dedicated virtual python environment using
 one of the other solutions.
 
 ### Setup
-1. Clone the repository on local machine where calculation will be executed.
+1. Clone the repository on local machine where calculation will be executed. Set the environment variable `NEW_REPO` to the directory containing `DNN_neutrino_reco`:
 
+```
+export NEW_REPO=/path/to/repository
+```
 
 ## How to contribute
 
@@ -80,6 +88,7 @@ The flow of a data analysis like the one proposed here is the following:
 
 - EVALUATION: 
   python3 Evaluate.py -c /path/to/JobOption/NNconfig.cfg -p neu
+  --> this will avluate all the DNN models, created in the previous step
   
 - PLOT:
   python3  plot_evaluated.py -c JobOption/NNplot_config.cfg

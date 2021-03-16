@@ -39,14 +39,14 @@ one of the other solutions.
 
 ## How to contribute
 
-Contributions are welcomed as long as the stick to the **git-flow**: fork 
+Contributions are welcomed as long as one sticks to the **git-flow**: fork 
 this repo, create a local branch named 'feature-XXX'. Commit often. Split 
 it in multiple commits and request a merge to the mainline often. 
 
 To add new contribution please remember to follow 
 [PEP 8](https://www.python.org/dev/peps/pep-0008/)
-style guide, add enough comments to let the code unrstandable to other a
-user/developer and add detailed docstring followingn the [numpy](https://numpydoc.readthedocs.io/en/latest/format.html)
+style guide, add enough comments to make the code understandable to other
+user/developer and add detailed docstring following the [numpy](https://numpydoc.readthedocs.io/en/latest/format.html)
 style.
 
 ## Authors

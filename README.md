@@ -87,8 +87,8 @@ The flow of a data analysis like the one proposed here is the following:
   --> this will create all combination of different NN layout and produce separate naming folders where models, loss, training logs are saved
 
 - EVALUATION: 
-  python3 Evaluate.py -c /path/to/JobOption/NNconfig.cfg -p neu
-  --> this will avluate all the DNN models, created in the previous step
+  python3 Evaluate.py -c /path/to/JobOption/NNconfig.cfg -p pattern
+  --> This will avluate all the DNN models, created in the previous step. `pattern` is the substring present in model names (directories) which one wants to evaluate. It can be used for model subset selection or to avoid crash due to possible files/directories in the input path, which do not contain DNN models.
   
 - PLOT:
   python3  plot_evaluated.py -c JobOption/NNplot_config.cfg
@@ -103,7 +103,7 @@ The flow of a data analysis like the one proposed here is the following:
 
 ## DNN configuration
 
-Settings of the DNN are cotrolled via the configuration file (`.cfg`). The same configuration file is used for the training (`Training.py`) and evaluation (`Evaluate.py`). Each configuration file has to contain ALL the parameters from this list. An example can be found in [NNRegressionExample.cfg](https://github.com/grossiM/DNN_neutrino_reco/blob/master/DNN_main/JobOption/NNRegressionExample.cfg).
+Settings of the DNN are cotrolled via the configuration file (`.cfg`). The same configuration file is used for the training (`Training.py`) and evaluation (`Evaluate.py`). Each configuration file has to contain ALL the parameters from this list. Examples can be found in [NNRegressionExample.cfg](https://github.com/grossiM/DNN_neutrino_reco/blob/master/DNN_main/JobOption/NNRegressionExample.cfg) and [NNBinaryExample.cfg](https://github.com/grossiM/DNN_neutrino_reco/blob/master/DNN_main/JobOption/NNBinaryExample.cfg).
 
 | Parameter name  | Allowed values | Description
 | :-----:         | :---:          | :----------------------------------------
@@ -121,6 +121,7 @@ Settings of the DNN are cotrolled via the configuration file (`.cfg`). The same 
 | `loss` | `binary_crossentropy`, `mean_square_error`, etc.  | Loss function definition.
 | `epochs`             | integer  | Number of epochs.
 | `batch-size`         | integer  | Batch size.
+| `learning_rate`      | float    | Learning rate.
 | `metrics` | `binary_accuracy`, `categorical_accuracy`, etc.  | Characteristic variables to be monitored during the training.
 | `model`         | `custom_model`, `dihiggs_model` | The ID of the DNN model type to be used. Currently two models are implemented in the framework: `custom_model` and `dihiggs_model`. `dihiggs_model` is meant for a more specific usecases and therefore the user is advized to use `custom_model`, which provides a skeleton for a DNN topology with equal number of nodes/neurons in each hidden layer. The type of the model determines the set of parameters needed in order to uniquely define the DNN topology. `custom_model` takes `hidden-layers`, `neurons`, `dropout-rate`, `activation`, `last-activation` and `kernel_init`. If the flexibility of the `custom_model` is insufficient, one can define their own model type with not too much effort in [Model.py](https://github.com/grossiM/DNN_neutrino_reco/blob/master/DNN_main/TrainingHandler/Model.py).
 | `hidden-layers`      | integer   | Number of hidden layers.

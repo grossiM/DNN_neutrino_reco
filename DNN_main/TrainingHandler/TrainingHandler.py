@@ -141,7 +141,6 @@ class TrainingHandler():
         model = Model.build(self.properties)
 
         if self.properties['save-steps']:
-            print('I am here')
             print(self.properties['save-steps'])
             auto_save = ModelCheckpoint(self.properties['output-folder'] +"/current_model_epoch{epoch:02d}",monitor='val_loss', verbose=1, save_best_only=False, save_weights_only=False, mode='auto', period=1)
             print(auto_save)

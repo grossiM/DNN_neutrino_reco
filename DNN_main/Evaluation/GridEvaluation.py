@@ -39,7 +39,7 @@ class GridEvaluation():
 		training_variables = self.config.get('training', 'training-variables').split(',')
 		training_labels = self.config.get('training', 'training-labels').split(',')
 
-		print(">>> Loading datasets ...TEST ")
+		print(">>> Loading datasets ... ")
 
 		self.pd_names = []
 		self.pd_eval = {}

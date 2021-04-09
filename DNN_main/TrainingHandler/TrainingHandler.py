@@ -92,7 +92,6 @@ class TrainingHandler():
             for parameters in self.grid:
                 model_name = ""
                 for i in range(len(parameters)):
-                    print('parameters' + str(parameters[i]))
                     self.properties[self.grid_order[i]] = parameters[i]
                     model_name += self.grid_order[i][:3] + parameters[i]
                 self.properties['output-folder'] = base_name + '/' + model_name
@@ -141,9 +140,7 @@ class TrainingHandler():
         model = Model.build(self.properties)
 
         if self.properties['save-steps']:
-            print(self.properties['save-steps'])
             auto_save = ModelCheckpoint(self.properties['output-folder'] +"/current_model_epoch{epoch:02d}",monitor='val_loss', verbose=1, save_best_only=False, save_weights_only=False, mode='auto', period=1)
-            print(auto_save)
         else:
             auto_save = ModelCheckpoint(self.properties['output-folder'] + "/current_model", monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=2)
 
@@ -156,7 +153,6 @@ class TrainingHandler():
                             callbacks=[auto_save])
 
         elif self.properties['scale-label'] == '0':
-            print('labels not scaled')
             history = model.fit(self.data_train_scaled, self.labels_train,
                             validation_data = (self.data_val_scaled, self.labels_val),
                             epochs=self.properties['epochs'],
